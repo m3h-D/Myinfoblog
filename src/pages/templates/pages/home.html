@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block home %}
+<div class="bd-example">
+    <div id="carouselExampleCaptions1" class="carousel slide" data-ride="carousel">
+
+        <div class="carousel-inner" style="height: 750px">
+            {% for item in slide_category %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+
+                <img src="{{ item.image.url }}" class="d-block w-100" alt="..." style="height: 730px">
+                <div class="carousel-caption d-none d-md-block">
+                    <ol class="nav-menu">
+
+                        <li class="buy-tickets" style="width: 100%"><a href="{{ item.get_absolute_url }}">
+                                <h5 class="text-light">{{ item.title }}</h5>
+                            </a></li>
+                    </ol>
+                    <p>{{ item.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            <a class="carousel-control-prev" href="#carouselExampleCaptions1" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleCaptions1" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+    <!-- Services -->
+    <section id="services" class="home-section bg-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <div class="section-heading" dir="rtl">
+                        <h2 class="text-right">پست های ویژه</h2>
+                        <div class="heading-line"></div>
+                        <p class="text-right">پست های ویژه پست های تایید شده توسط مدیر سایت هستند.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="carouselExampleCaptions" data-ride="carousel" class="service carousel slide">
+
+                        <!-- slides -->
+                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+
+                            <div class="carousel-inner">
+                                {% for post in special_posts %}
+                                <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                                    <div class="row">
+                                        <div class="col-sm-12 offset-md-1 col-md-5 mb-4">
+                                            <img src="{{ post.image.url }}" class="img-responsive" alt=""
+                                                style="width: 100%; height: 300px" />
+
+                                        </div>
+                                        <div class="col-sm-12 col-md-4" dir="rtl">
+
+                                            <h4 class="text-right">{{ post.title }}</h4>
+                                            <p>{{ post.content|safe|truncatechars_html:"10" }}</p>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <ol class="carousel-indicators">
+                                {% for post in special_posts %}
+                                <li data-target="#carouselExampleIndicators" data-slide-to="
+                                {% if forloop.counter == 0 %}
+                                0
+                                {% endif %}
+                                {% if forloop.counter == 1 %}
+                                1
+                                {% endif %}
+                                {% if forloop.counter == 3 %}
+                                3
+                                {% endif %}
+                                " class="{% if forloop.first %}active{% endif %} bg-danger"></li>
+                                {% endfor %}
+                                <!-- <li data-target="#carouselExampleIndicators" data-slide-to="1" class="bg-danger"></li>
+                                <li data-target="#carouselExampleIndicators" data-slide-to="2" class="bg-danger"></li> -->
+                            </ol>
+                        </div>
+                        <!-- ------------- -->
+
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <!-- ==========================
+    Latest Posts
+    =========================== -->
+    <br><br>
+    <hr>
+    <br><br>
+
+    <section class="container">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="section-heading" dir="rtl">
+                    <h2 class="text-right">جدیدترین</h2>
+                    <div class="heading-line"></div>
+                    <p class="text-right">جدیدترین پست ها قرار گرفته شده سایت.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-around" dir="rtl">
+            {% for post in late_post_sidebar %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <a class="text-dark" href="{{ post.get_absolute_url }}">
+                        <div class="zoom cardtitle" style="position:relative">
+                            <img src="{{ post.image.url }}" class="card-img-top responsive-img" alt=""
+                                style="height: 300px">
+                            <h5 class="card-text text-light mb-0" style="background-color: rgba(0, 0, 0, 0.575);position:absolute; bottom:0;
+                  padding:10px 20px; width:100%; text-align:center;">
+                                {{ post.title }}
+
+                                <div class="row justify-content-center mt-2">
+                                    <small class=" card-text text-light" style="height: 0%">
+                                        {{ post.comments.count }} <i class="far fa-comments"></i></small>
+                                    <small class=" card-text text-light mr-5" style="height: 0%">
+                                        {{ post.post_like.count }} <i class="fas fa-heart"></i></small>
+                                    <small class=" card-text text-light  mr-5" style="height: 0%">
+                                        {{ post.post_viewed.count }} <i class="far fa-eye"></i></small>
+                                </div>
+
+                            </h5>
+
+                        </div>
+                    </a>
+                    <div class="card-body">
+                        <div class="row justify-content-around">
+                            <p class="text-muted ">
+                                <small><b>
+                                        {% for x in post.category.all %}
+                                        {% if post.category.all.count <= 1 %}
+                                        {{ x.title }}
+                                        {% elif post.category.all.count > 1 %}
+                                        {% if forloop.first %}
+                                        {% else %}
+                                        |
+                                        {% endif %}
+                                        {{ x.title }}
+                                        {% endif %}
+                                        {% endfor %} </b></small>
+                            </p>
+                            <p class="text-muted"><small>{{ post.created }}</small></p>
+                        </div>
+                        <hr class="my-1">
+
+                        <p class="card-text">{{ post.content|safe|truncatechars_html:"10"}}</p>
+
+                    </div>
+                    <div class="card-footer" style="text-align: right">
+                        <img class="offset-sm-1 rounded-circle" src="{{ post.author.profile.image.url }}"
+                            alt="{{ post.author.username }}" style="width: 60px;height: 60px;">
+                        <small class="offset-sm-1 text-right"><strong>{{ post.author.username }}</strong></small>
+                        <small class="text-right" dir="rtl">{{ post.created|timesince }} پیش</small>
+
+
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+        <center>
+            <span>
+                <a class="mt-5 mb-5 py-2" style="width: 1200px" href="{% url 'posts:post-list'%}" id="rainbowbtn">مشاهده
+                    پست
+                    های بیشتر</a>
+            </span>
+        </center>
+        <div>
+
+    </section>
+    <br><br><br><br>
+
+    <hr>
+    <div class="col-md-offset-2 col-md-8 mb-5">
+        <div class="section-heading" dir="rtl">
+            <h2 class="text-right">پیشنهاد به شما</h2>
+            <div class="heading-line"></div>
+            <p class="text-right">پست های سفارش شده براساس دسته مورد علاقه شما</p>
+        </div>
+    </div>
+    <section class="container" dir="rtl">
+        <div id="carouselExampleControls7" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+
+                <div class="carousel-item active ">
+                    <div class="row justify-content-start">
+                        {% for item in recommended %}
+                        <div class="col-md-3">
+                            <a class="text-dark" href="{{ item.get_absolute_url }}">
+                                <div class="zoom cardtitle" style="position:relative">
+                                    <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}"
+                                        style="height: 230px">
+                                    <h5 class="card-text text-light mb-0" style="background-color: rgba(0, 0, 0, 0.575);position:absolute; bottom:0;
+                                                        padding:10px 20px; width:100%; text-align:center;">
+                                        {{ item.title }}
+                                        <div class="row justify-content-around mt-3">
+                                            <small class=" card-text text-light mt-2">
+                                                <small><small>
+                                                        {% for x in item.category.all %}
+                                                        {% if item.category.all.count <= 1 %}
+                                                        {{ x.title }}
+                                                        {% elif item.category.all.count > 1 %}
+                                                        {% if forloop.first %}
+                                                        {% else %}
+                                                        |
+                                                        {% endif %}
+                                                        {{ x.title }}
+                                                        {% endif %}
+                                                        {% endfor %}
+                                                    </small></small>
+                                            </small>
+                                            <!-- <small class=" card-text text-light">تعدادلایک ها : {{ item.post_like.count }}</small>
+                                                        <small class=" card-text text-light">بازدید ها : {{ item.post_viewed.count }}</small> -->
+                                            <!-- <img class="rounded-circle" src="{{ item.author.profile.image.url }}"
+                                                            alt="{{ item.author.username }}" style="width: 40px;height: 40px;"> -->
+                                        </div>
+
+                                    </h5>
+
+                                </div>
+                            </a>
+
+                        </div>
+
+                        {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <div class="row justify-content-start">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+
+            </div>
+            <a class="carousel-control-prev rounded-circle btn-outline-dark" href="#carouselExampleControls7"
+                style="margin-top: 90px;width: 50px;background-color: #f82249;height: 50px;" role="button"
+                data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next rounded-circle btn-outline-dark" href="#carouselExampleControls7"
+                style="margin-top: 90px;width: 50px;background-color: #f82249;height: 50px;" role="button"
+                data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </section>
+    <br><br><br><br>
+
+    <hr>
+    <!--==========================
+      Clients Section
+    ============================-->
+    <section class="container" dir="rtl">
+        <header class="section-header text-center">
+            <h3>نویسندگان سایت</h3>
+        </header>
+
+        <div id="carouselExampleIndicators3" class="carousel slide" data-ride="carousel">
+
+            <div class="carousel-inner">
+                {% for users in authors %}
+                <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                    <div class="row mb-5">
+                        <div class="col-md-4">
+                            <img src="{{ users.profile.image.url }}" class="responsive-img rounded-circle"
+                                style="width: 100px;height: 100px" alt="">
+                        </div>
+                        <div class="col-md-7 text-right">
+                            <h3>{{ users.first_name }}</h3>
+                            <h4>{% if users.is_superuser %}ادمین و {% endif %}نویسنده</h4>
+                            <p class="mr-3">
+                                {{ users.profile.bio }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+            <ol class="carousel-indicators">
+                {% for users in authors %}
+                <li data-target="#carouselExampleIndicators3" style="border-radius: 100%; height: 12px;width: 12px;"
+                    data-slide-to="
+                {% if forloop.counter == 0 %}
+                0
+                {% endif %}
+                {% if forloop.counter == 1 %}
+                1
+                {% endif %}
+                {% if forloop.counter == 3 %}
+                3
+                {% endif %}
+                " class="{% if forloop.first %}active{% endif %} bg-danger"></li>
+                {% endfor %}
+            </ol>
+
+        </div>
+
+        <!-- ---------- -->
+
+
+
+
+
+
+</div>
+</section><!-- #testimonials -->
+
+
+<section>
+
+    <!-- End Blog Area -->
+
+    <div class="clearfix"></div>
+</section>
+{% endblock %}

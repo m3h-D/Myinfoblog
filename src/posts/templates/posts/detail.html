@@ -1,0 +1,1064 @@
+{% extends 'base.html' %}
+{% block header %}
+{% load static %}
+<img src="{% static 'media/detail.jpg' %}" alt="" style="width: 100%;height: 750px">
+{% endblock %}
+{% block detail %}
+<style>
+    .postcontent img {
+        width: 100%;
+    }
+</style>
+
+<div class="row" style="width: 100%">
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 offset-md-1">
+        {% include "posts/sidebar.html" %}
+    </div>
+    <!-- End left sidebar -->
+    <main class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+        <br>
+        <div class="container">
+            <div class="row">
+                <div class="card" style="width: 60rem;">
+                    <img src="{{ post.image.url }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <div class="row offset-md-5">
+                            <p class="text-center text-muted ml-md-2"><b>
+                                    {% for x in post.category.all %}
+                                    {% if post.category.all.count <= 1 %}
+                                    {{ x.title }}
+                                    {% elif post.category.all.count > 1 %}
+                                    {% if forloop.first %}
+                                    {% else %}
+                                    |
+                                    {% endif %}
+                                    {{ x.title }}
+                                    {% endif %}
+                                    {% endfor %}
+                                </b></p>
+                        </div>
+
+                        <br>
+
+                        <div class="row justify-content-center">
+                            {% for x in post.rated_post %}
+
+                            {% if request.user == x.user %}
+                            {% else %}
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-default text-primary" data-toggle="modal"
+                                data-target="#exampleModalCenter">
+                                امتیاز دهید
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalCenterTitle">امتیاز دهید</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="." method="post">{% csrf_token %}
+                                                <div class="page col-md-10 offset-md-3">
+                                                    <div class="page__demo">
+                                                        <div class="page__group">
+                                                            <div class="rating">
+                                                                <input type="radio" name="rating"
+                                                                    class="rating__control" id="rc1" value="1">
+                                                                <input type="radio" name="rating"
+                                                                    class="rating__control" id="rc2" value="2">
+                                                                <input type="radio" name="rating"
+                                                                    class="rating__control" id="rc3" value="3">
+                                                                <input type="radio" name="rating"
+                                                                    class="rating__control" id="rc4" value="4">
+                                                                <input type="radio" name="rating"
+                                                                    class="rating__control" id="rc5" value="5">
+                                                                <label for="rc1" class="rating__item">
+                                                                    <svg class="rating__star" data-toggle="tooltip"
+                                                                        data-placement="top" title="خیلی بد">
+                                                                        <use xlink:href="#star"></use>
+                                                                    </svg>
+                                                                    <span class="rating__label">1</span>
+                                                                </label>
+                                                                <label for="rc2" class="rating__item">
+                                                                    <svg class="rating__star" data-toggle="tooltip"
+                                                                        data-placement="top" title="بد">
+                                                                        <use xlink:href="#star"></use>
+                                                                    </svg>
+                                                                    <span class="rating__label">2</span>
+                                                                </label>
+                                                                <label for="rc3" class="rating__item">
+                                                                    <svg class="rating__star" data-toggle="tooltip"
+                                                                        data-placement="top" title="متوسط">
+                                                                        <use xlink:href="#star"></use>
+                                                                    </svg>
+                                                                    <span class="rating__label">3</span>
+                                                                </label>
+                                                                <label for="rc4" class="rating__item">
+                                                                    <svg class="rating__star" data-toggle="tooltip"
+                                                                        data-placement="top" title="خوب">
+                                                                        <use xlink:href="#star"></use>
+                                                                    </svg>
+                                                                    <span class="rating__label">4</span>
+                                                                </label>
+                                                                <label for="rc5" class="rating__item">
+                                                                    <svg class="rating__star" data-toggle="tooltip"
+                                                                        data-placement="top" title="خیلی خوب">
+                                                                        <use xlink:href="#star"></use>
+                                                                    </svg>
+                                                                    <span class="rating__label">5</span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+                                                    <symbol id="star" viewBox="0 0 26 28">
+                                                        <path
+                                                            d="M26 10.109c0 .281-.203.547-.406.75l-5.672 5.531 1.344 7.812c.016.109.016.203.016.313 0 .406-.187.781-.641.781a1.27 1.27 0 0 1-.625-.187L13 21.422l-7.016 3.687c-.203.109-.406.187-.625.187-.453 0-.656-.375-.656-.781 0-.109.016-.203.031-.313l1.344-7.812L.39 10.859c-.187-.203-.391-.469-.391-.75 0-.469.484-.656.875-.719l7.844-1.141 3.516-7.109c.141-.297.406-.641.766-.641s.625.344.766.641l3.516 7.109 7.844 1.141c.375.063.875.25.875.719z" />
+                                                    </symbol>
+                                                </svg>
+
+                                                <!-- <button type="submit" hidden>sabt</button> -->
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">لغو</button>
+                                            <button type="submit" class="btn btn-primary">ثبت امتیاز</button>
+
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% empty %}
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-default text-primary" data-toggle="modal"
+                                data-target="#exampleModalCenter">
+                                امتیاز دهید
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalCenterTitle">امتیاز دهید</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="." method="post">{% csrf_token %}
+                                                <div class="page col-md-10 offset-md-3">
+                                                    <div class="page__demo">
+                                                        <div class="page__group">
+                                                            <div class="rating">
+                                                                <input type="radio" name="rating"
+                                                                    class="rating__control" id="rc1" value="1">
+                                                                <input type="radio" name="rating"
+                                                                    class="rating__control" id="rc2" value="2">
+                                                                <input type="radio" name="rating"
+                                                                    class="rating__control" id="rc3" value="3">
+                                                                <input type="radio" name="rating"
+                                                                    class="rating__control" id="rc4" value="4">
+                                                                <input type="radio" name="rating"
+                                                                    class="rating__control" id="rc5" value="5">
+                                                                <label for="rc1" class="rating__item">
+                                                                    <svg class="rating__star" data-toggle="tooltip"
+                                                                        data-placement="top" title="خیلی بد">
+                                                                        <use xlink:href="#star"></use>
+                                                                    </svg>
+                                                                    <span class="rating__label">1</span>
+                                                                </label>
+                                                                <label for="rc2" class="rating__item">
+                                                                    <svg class="rating__star" data-toggle="tooltip"
+                                                                        data-placement="top" title="بد">
+                                                                        <use xlink:href="#star"></use>
+                                                                    </svg>
+                                                                    <span class="rating__label">2</span>
+                                                                </label>
+                                                                <label for="rc3" class="rating__item">
+                                                                    <svg class="rating__star" data-toggle="tooltip"
+                                                                        data-placement="top" title="متوسط">
+                                                                        <use xlink:href="#star"></use>
+                                                                    </svg>
+                                                                    <span class="rating__label">3</span>
+                                                                </label>
+                                                                <label for="rc4" class="rating__item">
+                                                                    <svg class="rating__star" data-toggle="tooltip"
+                                                                        data-placement="top" title="خوب">
+                                                                        <use xlink:href="#star"></use>
+                                                                    </svg>
+                                                                    <span class="rating__label">4</span>
+                                                                </label>
+                                                                <label for="rc5" class="rating__item">
+                                                                    <svg class="rating__star" data-toggle="tooltip"
+                                                                        data-placement="top" title="خیلی خوب">
+                                                                        <use xlink:href="#star"></use>
+                                                                    </svg>
+                                                                    <span class="rating__label">5</span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+                                                    <symbol id="star" viewBox="0 0 26 28">
+                                                        <path
+                                                            d="M26 10.109c0 .281-.203.547-.406.75l-5.672 5.531 1.344 7.812c.016.109.016.203.016.313 0 .406-.187.781-.641.781a1.27 1.27 0 0 1-.625-.187L13 21.422l-7.016 3.687c-.203.109-.406.187-.625.187-.453 0-.656-.375-.656-.781 0-.109.016-.203.031-.313l1.344-7.812L.39 10.859c-.187-.203-.391-.469-.391-.75 0-.469.484-.656.875-.719l7.844-1.141 3.516-7.109c.141-.297.406-.641.766-.641s.625.344.766.641l3.516 7.109 7.844 1.141c.375.063.875.25.875.719z" />
+                                                    </symbol>
+                                                </svg>
+
+                                                <!-- <button type="submit" hidden>sabt</button> -->
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">لغو</button>
+                                            <button type="submit" class="btn btn-primary">ثبت امتیاز</button>
+
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                            <div class="page__group">
+                                <div class="rating">
+
+                                    <input type="radio" name="rating-star2" class="rating__control" id="rc6"
+                                        {% if post.post_rate <= 1 %} checked {% endif %} disabled>
+                                    <input type="radio" name="rating-star2" class="rating__control" id="rc7"
+                                        {% if post.post_rate < 3 and post.post_rate >= 2 %} checked {% endif %}
+                                        disabled>
+                                    <input type="radio" name="rating-star2" class="rating__control" id="rc8"
+                                        {% if post.post_rate < 4 and post.post_rate >= 3 %} checked {% endif %}
+                                        disabled>
+                                    <input type="radio" name="rating-star2" class="rating__control" id="rc9"
+                                        {% if post.post_rate < 5 and post.post_rate >= 4 %} checked {% endif %}
+                                        disabled>
+                                    <input type="radio" name="rating-star2" class="rating__control" id="rc10"
+                                        {% if post.post_rate >= 5 %} checked {% endif %} disabled>
+
+                                    <label for="rc6" class="rating__item">
+                                        <svg class="rating__star">
+                                            <use xlink:href="#star"></use>
+                                        </svg>
+                                        <span class="rating__label">1</span>
+                                    </label>
+                                    <label for="rc7" class="rating__item">
+                                        <svg class="rating__star">
+                                            <use xlink:href="#star"></use>
+                                        </svg>
+                                        <span class="rating__label">2</span>
+                                    </label>
+                                    <label for="rc8" class="rating__item">
+                                        <svg class="rating__star">
+                                            <use xlink:href="#star"></use>
+                                        </svg>
+                                        <span class="rating__label">3</span>
+                                    </label>
+                                    <label for="rc9" class="rating__item">
+                                        <svg class="rating__star">
+                                            <use xlink:href="#star"></use>
+                                        </svg>
+                                        <span class="rating__label">4</span>
+                                    </label>
+                                    <label for="rc10" class="rating__item">
+                                        <svg class="rating__star">
+                                            <use xlink:href="#star"></use>
+                                        </svg>
+                                        <span class="rating__label">5</span>
+                                    </label>
+                                </div>
+                            </div>
+
+
+
+
+
+                            <!-- {{ post.get_rated_display }} -->
+                            <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+                                <symbol id="star" viewBox="0 0 26 28">
+                                    <path
+                                        d="M26 10.109c0 .281-.203.547-.406.75l-5.672 5.531 1.344 7.812c.016.109.016.203.016.313 0 .406-.187.781-.641.781a1.27 1.27 0 0 1-.625-.187L13 21.422l-7.016 3.687c-.203.109-.406.187-.625.187-.453 0-.656-.375-.656-.781 0-.109.016-.203.031-.313l1.344-7.812L.39 10.859c-.187-.203-.391-.469-.391-.75 0-.469.484-.656.875-.719l7.844-1.141 3.516-7.109c.141-.297.406-.641.766-.641s.625.344.766.641l3.516 7.109 7.844 1.141c.375.063.875.25.875.719z" />
+                                </symbol>
+                            </svg>
+                        </div>
+                        <div class="text-center">
+
+                            <h5>{{post.post_rate}}</h5>
+                        </div>
+
+                        <div class="row">
+                            <!-- {% if request.user.is_staff %}
+                            <div class="col-md-5">
+                                <a class="btn btn-outline-danger offset-md-1" href="{{ post.get_delete_url }}"> حذف
+                                    <ion-icon name="trash">
+                                    </ion-icon>
+
+                                </a>
+                                <a class="btn btn-outline-info ml-1" href="{{ post.get_update_url }}">
+                                    ویرایش
+                                    <ion-icon name="create">
+                                    </ion-icon>
+                                </a>
+                            </div>
+                            <div class="col-md-7">
+                                <h4 class="card-title text-right">{{ post.title }}</h4>
+                            </div>
+                            {% else %} -->
+                            <div class="col-md-12">
+                                <h4 class="card-title text-right">{{ post.title }}</h4>
+                            </div>
+                            <!-- {% endif %} -->
+
+
+                        </div>
+                        <br>
+                        <hr>
+                        <div class="col-md-12">
+                            {% if messages %}
+                            {% for message in messages %}
+
+
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <!-- <a class="text-dark" href=""> -->
+                                <center>
+                                    {{ message }}
+                                </center>
+                                </a>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="row justify-content-around">
+
+                            <!-- {% if is_liked == False %}
+                            <form action="" method="post">{% csrf_token %}
+                                <button class="btn btn-outline-danger mt-md-5 ml-md-5" type="submit" name="post_id"
+                                    value="{{ post.id }}">
+                                    <ion-icon name="heart"></ion-icon><span
+                                        class="badge badge-light">{{ post.likes.count }}</span>
+                                </button>
+                            </form>
+                            {% else %}
+                            <form action="" method="post">{% csrf_token %}
+                                <button class="btn btn-danger mt-md-5 ml-md-5" type="submit" name="post_id"
+                                    value="{{ post.id }}">
+                                    <ion-icon name="heart"></ion-icon><span
+                                        class="badge badge-light">{{ post.likes.count }}</span>
+                                </button>
+                            </form>
+                            {% endif %} -->
+                            <a href="{% url 'bookmarks:add-to-bookmarke' post.id %}" class="text-dark mt-md-5"
+                                style="font-size: 24px">
+                                {% for book in post.bookmarked_post %}
+                                {% if book.user == request.user %}
+                                <i class='fas fa-bookmark'></i>
+                                {% else %}
+                                <i class='far fa-bookmark'></i>
+                                {% endif %}
+                                {% empty %}
+                                <i class='far fa-bookmark'></i>
+                                {% endfor %}
+                            </a>
+
+                            {% if is_liked == True %}
+                            <a id="like-btn" href="{% url 'likes:add-to-like-post' post.id%}"
+                                data-href="{{ post.get_absolute_api_url }}" data-likes="{{ post.post_like.count }}"
+                                class="text-danger mt-md-5" style="font-size: 24px"><i class="fas fa-heart"></i>
+                                <span style="font-size: 20px">
+                                    {{ post.post_like.count }}
+
+                                </span>
+                            </a>
+
+                            {% else %}
+                            <a id="like-btn" href="{% url 'likes:add-to-like-post' post.id%}"
+                                data-href="{{ post.get_absolute_api_url }}" data-likes="{{ post.post_like.count }}"
+                                class="text-danger mt-md-5" style="font-size: 24px"><i class="far fa-heart"></i>
+                                <span>
+                                    {{ post.post_like.count }}
+
+                                </span>
+                            </a>
+                            {% endif %}
+                            <a class="text-right mt-md-5" style="font-size: 24px" dir="rtl">
+                                <i class="fas fa-hourglass-half"></i> {{ post.read_time|time:"G:i:s" }}
+                            </a>
+                            <a class="mt-md-5 col-md-1" style="font-size: 24px"><i class="far fa-comments"></i>
+                                {{ comments.count }}
+                            </a>
+                            <a class="mt-md-5" style="font-size: 24px"><i class="far fa-eye"></i>
+                                {{ post.post_viewed.count }}
+                            </a>
+                            <a class="mt-md-5" style="font-size: 24px" dir="rtl"><i class="far fa-calendar-alt"></i>
+                                {{ post.created|timesince }} پیش
+                            </a>
+                            <a class="mt-md-5">{{ post.author.username }} <ion-icon name="person"></ion-icon>
+                            </a>
+                            <img class="rounded rounded-circle" src="{{ post.author.profile.image.url }}" alt=""
+                                style="width: 100px;height: 100px">
+
+                        </div>
+                        <hr>
+                        <p class="card-text text-right">{{ post.text }}</p>
+                        <br>
+
+                        <div class="postcontent" dir="rtl">
+                            {{ post.content | safe }}
+
+                        </div>
+                        <br><br><br>
+                        <hr>
+
+                        <h3 class="text-center">نظرات
+                            {{ comments.count }}</h3>
+
+                        <div class="">
+
+                            {% for comment in comments %}
+                            <!-- <div class="media">
+                                <div class="media-body">
+                                    <h5 class="mt-0 mb-1 text-right"> : {{ comment.user.username }}</h5>
+
+
+                                    <div class="text-right">
+                                        <h6> {{ comment.content }}</h6>
+
+                                    </div>
+
+
+                                    <div class="text-right">
+                                        <hr>
+
+
+
+                                        <small class="text-muted ">{{ comment.timestamp }}</small>
+
+                                    </div>
+
+                                </div>
+
+                                <img class="rounded rounded-circle ml-3" src="{{ comment.user.profile.image.url }}"
+                                    style="width: 9%;height: 80px" alt="...">
+
+                            </div> -->
+                            <hr>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h5 class="mt-0 mb-1 text-right"> : {{ comment.user.username }}</h5>
+
+
+                                    <div class="text-right">
+                                        <p> {{ comment.content|linebreaks }}</p>
+
+                                    </div>
+
+
+
+
+                                </div>
+
+                                <img class="rounded rounded-circle ml-3" src="{{ comment.user.profile.image.url }}"
+                                    style="width: 78px;height: 80px" alt="...">
+
+                            </div>
+
+                            <div class="accordion mr-md-5" id="accordionExample">
+                                <div class="card rounded">
+                                    <div class="row justify-content-end">
+                                        <a>
+                                            <button
+                                                class="btn btn-link text-primary collapsed text-decoration-none mr-5 mt-1"
+                                                type="button" data-toggle="collapse" data-target="#{{ comment.uuid }}"
+                                                aria-expanded="false" aria-controls="collapseThree">
+                                                پاسخ ها {{ comment.children.count }}
+                                            </button>
+                                        </a>
+                                        {% if user.id == comment.user.id %}
+                                        <a href="{% url 'comments:delete-comment' comment.id %}" style="font-size: 19px"
+                                            class="text-dark mr-5 mt-2"><i class="fas fa-eraser"></i></a>
+                                        {% endif %}
+
+                                        <!-- ------------------------------- like kardane commentha ------------------- -->
+
+                                        <a href="{% url 'likes:add-to-like-comment' comment.id %}"
+                                            class="text-success text-decoration-none mr-3 mt-2" style="font-size: 19px">
+
+                                            <i class="
+                                                    {% for like in comment.comment_like %}
+                                                    {% if request.user.is_anonymous %}
+                                                    {% if like.ip_address == ip_address %}
+                                                    fas
+                                                    {% else %}
+                                                    far
+                                                    {% endif %}
+                                                    {% endif %}
+                                                    {% if request.user.is_authenticated %}
+                                                    {% if like.user == request.user or like.ip_address == ip_address %}
+                                                    fas
+                                                    {% else %}
+                                                    far
+                                                    {% endif %}
+                                                    {% endif %}
+                                                    {% empty %}
+                                                    far
+                                                    {% endfor %}
+                                                    fa-thumbs-up"></i>
+
+                                            <span class="badge badge-light">{{comment.comment_like.count}}</span>
+
+                                        </a>
+
+
+                                        <!-- -------------------------------- dislike kardane comment ha ---------------------- -->
+
+
+
+
+                                        <a href="{% url 'likes:add-to-dislike' comment.id %}"
+                                            class="text-danger text-decoration-none mr-5 mt-2" style="font-size: 19px">
+
+                                            <i class="
+                                                    {% for dislike in comment.comment_dislike %}
+                                                    {% if request.user.is_anonymous %}
+                                                    {% if dislike.ip_address == ip_address %}
+                                                    fas 
+                                                    {% else %}
+                                                    far
+                                                    {% endif %}
+                                                    {% endif %}
+                                                    {% if request.user.is_authenticated %}
+                                                    {% if dislike.user == request.user or dislike.ip_address == ip_address %}
+                                                    fas
+                                                    {% else %}
+                                                    far
+                                                    {% endif %}
+                                                    {% endif %}
+                                                    {% empty %}
+                                                    far
+                                                    {% endfor %}
+                                                    fa-thumbs-down"></i>
+
+
+                                            <span class="badge badge-light">{{comment.comment_dislike.count}}</span>
+                                        </a>
+
+
+                                        <small class="text-muted mt-3 mr-5" dir="rtl">{{ comment.timestamp|timesince }}
+                                            پیش</small>
+
+                                    </div>
+                                    <div id="{{ comment.uuid }}" class="collapse" aria-labelledby="headingThree"
+                                        data-parent="#accordionExample">
+                                        <div class="card-body bg-light">
+                                            {% for child in comment.children %}
+
+                                            <blockquote style="width: 800px">
+                                                <div class="media bg-white rounded-pill">
+                                                    <div class="media-body">
+                                                        <h6 class="mt-0 mb-1 text-right"> :
+                                                            {{ child.user.username }}
+                                                            پاسخ
+                                                        </h6>
+
+
+                                                        <div class="text-right">
+                                                            <p> {{ child.content|linebreaks }}</p>
+
+                                                        </div>
+
+
+                                                        <div class="text-right">
+                                                            <hr>
+                                                            {% if user.id == child.user.id %}
+                                                            <a href="{% url 'comments:delete-comment' child.id %}"
+                                                                style="font-size: 19px" class="text-dark mr-3"><i
+                                                                    class="fas fa-eraser"></i></a>
+
+                                                            {% endif %}
+                                                            <!-- ------------------------------- like kardane commentha ------------------- -->
+
+
+
+                                                            <a href="{% url 'likes:add-to-like-comment' child.id %}"
+                                                                class="text-success text-decoration-none mr-3"
+                                                                style="font-size: 19px">
+                                                                <i class="
+                                                                {% for like in child.comment_like %}
+                                                                {% if request.user.is_anonymous %}
+                                                                {% if like.ip_address == ip_address %}
+                                                                fas
+                                                                {% else %}
+                                                                far
+                                                                {% endif %}
+                                                                {% endif %}
+                                                                {% if request.user.is_authenticated %}
+                                                                {% if like.user == request.user or like.ip_address == ip_address %}
+                                                                fas
+                                                                {% else %}
+                                                                far
+                                                                {% endif %}
+                                                                {% endif %}
+                                                                {% empty %}
+                                                                far
+                                                                {% endfor %}
+                                                                fa-thumbs-up"></i>
+                                                                <span
+                                                                    class="badge badge-light">{{child.comment_like.count}}</span>
+
+                                                            </a>
+
+
+
+                                                            <!-- -------------------------------- dislike kardane comment ha ---------------------- -->
+
+                                                            <a href="{% url 'likes:add-to-dislike' child.id %}"
+                                                                class="text-danger text-decoration-none"
+                                                                style="font-size: 19px">
+                                                                <i class="
+                                                                {% for dislike in child.comment_dislike %}
+                                                                {% if request.user.is_anonymous %}
+                                                                {% if dislike.ip_address == ip_address %}
+                                                                fas 
+                                                                {% else %}
+                                                                far
+                                                                {% endif %}
+                                                                {% endif %}
+                                                                {% if request.user.is_authenticated %}
+                                                                {% if dislike.user == request.user or dislike.ip_address == ip_address %}
+                                                                fas
+                                                                {% else %}
+                                                                far
+                                                                {% endif %}
+                                                                {% endif %}
+                                                                {% empty %}
+                                                                far
+                                                                {% endfor %}
+                                                                fa-thumbs-down"></i>
+                                                                <span
+                                                                    class="badge badge-light">{{child.comment_dislike.count}}</span>
+                                                            </a>
+
+                                                            <small class="text-muted "
+                                                                dir="rtl">{{ child.timestamp|timesince }}
+                                                                پیش
+                                                            </small>
+
+
+                                                        </div>
+
+
+                                                    </div>
+
+                                                    <img class="rounded rounded-circle ml-3"
+                                                        src="{{ child.user.profile.image.url }}"
+                                                        style="width: 78px;height: 80px" alt="...">
+
+                                                </div>
+                                                <form class="needs-validation" action="." method="POST" novalidate>
+                                                    {% csrf_token %}
+
+                                                    <!-- {{ comment_form }} -->
+                                                    <textarea class="form-control text-right" id="validationTextarea"
+                                                        placeholder="پاسخ شما به کامنت ({{ child.user.username }}) چیه؟"
+                                                        name="content" required dir="rtl"></textarea>
+                                                    <div class="invalid-feedback text-right">
+                                                        ابتدا فیلد مورد نظر را پر کنید
+                                                    </div>
+                                                    <br>
+                                                    <input type="hidden" name="parent_id" value="{{ child.id }}">
+
+                                                    <button class="btn btn-primary rounded-pill offset-md-10 mb-4 mt-0"
+                                                        type="submit">
+                                                        ثبت پاسخ
+                                                        <ion-icon name="create">
+                                                        </ion-icon></button>
+                                                    <hr>
+                                                </form>
+                                                {% for grandchild in child.children %}
+                                                <blockquote style="width: 750px">
+                                                    <div class="media bg-white rounded-pill">
+                                                        <div class="media-body">
+                                                            <h6 class="mt-0 mb-1 text-right"> :
+                                                                {{ grandchild.user.username }}
+                                                                پاسخ
+                                                            </h6>
+
+
+                                                            <div class="text-right">
+                                                                <p> {{ grandchild.content|linebreaks }}</p>
+
+                                                            </div>
+
+
+                                                            <div class="text-right">
+                                                                <hr>
+                                                                {% if user.id == grandchild.user.id %}
+                                                                <a href="{% url 'comments:delete-comment' grandchild.id %}"
+                                                                    style="font-size: 19px" class="text-dark mr-3"><i
+                                                                        class="fas fa-eraser"></i></a>
+
+                                                                {% endif %}
+                                                                <!-- ------------------------------- like kardane commentha ------------------- -->
+
+
+                                                                <a href="{% url 'likes:add-to-like-comment' grandchild.id %}"
+                                                                    class="text-success text-decoration-none mr-3"
+                                                                    style="font-size: 19px">
+                                                                    <i class="
+                                                                    {% for like in grandchild.comment_like %}
+                                                                    {% if request.user.is_anonymous %}
+                                                                    {% if like.ip_address == ip_address %}
+                                                                    fas
+                                                                    {% else %}
+                                                                    far
+                                                                    {% endif %}
+                                                                    {% endif %}
+                                                                    {% if request.user.is_authenticated %}
+                                                                    {% if like.user == request.user or like.ip_address == ip_address %}
+                                                                    fas
+                                                                    {% else %}
+                                                                    far
+                                                                    {% endif %}
+                                                                    {% endif %}
+                                                                    {% empty %}
+                                                                    far
+                                                                    {% endfor %}
+                                                                    fa-thumbs-up"></i>
+                                                                    <span
+                                                                        class="badge badge-light">{{grandchild.comment_like.count}}</span>
+
+                                                                </a>
+
+                                                                <!-- -------------------------------- dislike kardane comment ha ---------------------- -->
+
+
+                                                                <a href="{% url 'likes:add-to-dislike' grandchild.id %}"
+                                                                    class="text-danger text-decoration-none"
+                                                                    style="font-size: 19px">
+                                                                    <i class="
+                                                                    {% for dislike in grandchild.comment_dislike %}
+                                                                    {% if request.user.is_anonymous %}
+                                                                    {% if dislike.ip_address == ip_address %}
+                                                                    fas 
+                                                                    {% else %}
+                                                                    far
+                                                                    {% endif %}
+                                                                    {% endif %}
+                                                                    {% if request.user.is_authenticated %}
+                                                                    {% if dislike.user == request.user or dislike.ip_address == ip_address %}
+                                                                    fas
+                                                                    {% else %}
+                                                                    far
+                                                                    {% endif %}
+                                                                    {% endif %}
+                                                                    {% empty %}
+                                                                    far
+                                                                    {% endfor %}
+                                                                    fa-thumbs-down"></i>
+                                                                    <span
+                                                                        class="badge badge-light">{{grandchild.comment_dislike.count}}</span>
+                                                                </a>
+
+                                                                <small class="text-muted "
+                                                                    dir="rtl">{{ grandchild.timestamp|timesince }} پیش
+                                                                </small>
+
+
+                                                            </div>
+
+
+                                                        </div>
+
+                                                        <img class="rounded rounded-circle ml-3"
+                                                            src="{{ grandchild.user.profile.image.url }}"
+                                                            style="width: 78px;height: 80px" alt="...">
+
+                                                    </div>
+
+                                                </blockquote>
+                                                {% endfor %}
+                                            </blockquote>
+
+                                            {% endfor %}
+                                            <hr>
+                                            <form class="needs-validation" action="." method="POST" novalidate>
+                                                {% csrf_token %}
+
+                                                <!-- {{ comment_form }} -->
+                                                <textarea class="form-control text-right" id="validationTextarea"
+                                                    placeholder="پاسخ شما به کامنت ({{ comment.user.username }}) چیه؟"
+                                                    name="content" required dir="rtl"></textarea>
+                                                <div class="invalid-feedback text-right">
+                                                    ابتدا فیلد مورد نظر را پر کنید
+                                                </div>
+                                                <br>
+                                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+
+                                                <button class="btn btn-primary rounded-pill offset-md-10" type="submit">
+                                                    ثبت پاسخ
+                                                    <ion-icon name="create">
+                                                    </ion-icon></button>
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5 offset-md-6 ">
+
+                            </div>
+                            <hr>
+                            {% endfor %}
+                            <h4 class="text-right">نظر شما راجب این پست چیه ؟</h4>
+                            <br>
+                            {% if request.user.is_authenticated %}
+                            <form class="needs-validation" action="." method="POST" novalidate>{% csrf_token %}
+                                <div class="col-md-5 offset-md-7 ">
+                                    <!-- {{ comment_form }} -->
+                                    <textarea class="form-control text-right" id="validationTextarea" placeholder=""
+                                        name="content" required></textarea>
+                                    <div class="invalid-feedback text-right">
+                                        ابتدا فیلد مورد نظر را پر کنید
+                                    </div>
+                                    <br>
+
+                                    <div class="offset-md-10 mt-md-2 mb-md-5">
+                                        <button id="rainbowbtn" type="submit" style="width: 90px;height: 40px"> نظر
+                                            دهید
+                                        </button>
+                                    </div>
+                            </form>
+                            {% else %}
+                            <!-- <p class="text-right alert alert-warning" role="alert">
+                                    برای نظر دهی باید <a href="">وارد</a> شوید
+                                </p> -->
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- <aside class="col-md-3"> -->
+    <!-- ------- search ----- -->
+
+    <!-- ------- Latest posts ------- -->
+    <!-- <hr>
+        <div>
+            <label class="btn btn-light" style="width: 320px">
+                <h3 class="text-center"> اخرین پست ها </h3>
+            </label>
+            {% for post in latest %}
+            <a class="text-dark" href="{{ post.get_absolute_url }}">
+                <div class="card mb-3" style="width: 320px;height: 101px">
+                    <div class="row no-gutters">
+
+                        <img src="{{ post.image.url }}" class="card-img" alt="..." style="height: 100px;width: 133px">
+
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{ post.title|truncatewords:2 }}</h5>
+                            <div class="row justify-content-center">
+
+                                <p class="card-text">
+                                    <ion-icon name="paper"></ion-icon>{{ post.get_comments.count }}
+                                </p>
+
+
+                                <p class="card-text offset-md-2">
+                                    <ion-icon name="heart"></ion-icon>
+                                    {{ post.like.count}}
+
+                                </p>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div> -->
+    <!-- --------- categories --------- -->
+    <!-- <hr>
+        <div>
+            <label class="btn btn-light" style="width: 320px">
+                <h3 class="text-center">دسته ها</h3>
+            </label>
+
+            <div class="row">
+                <div class="col-md-1 mt-md-2">
+                    {% for cate in category_count %}
+                    <label class="btn btn-dark mt-md-2">{{ cate.categories__title__count }}</label>
+                    {% endfor %}
+                </div>
+                <div class="col-md-7 text-right">
+                    {% for cat in categories %}
+                    <a href="{% url 'post_category' cat.slug %}" class="btn btn-dark mt-md-3"
+                        style="width: 290px">{{ cat.title }}</a>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+        </div>
+    </aside> -->
+</div>
+<!-- <a class="fixed-bottom ml-4 mb-4 btn rounded rounded-circle btn-outline-primary" href="#"
+    style="width: 55px; height: 50px">
+    <ion-icon class="mt-2" name="arrow-round-up"></ion-icon>
+</a> -->
+<hr>
+<br><br>
+<section class="container " dir="rtl">
+    <h4 class="text-right mb-4">پست های مشابه</h4>
+    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+
+            <div class="carousel-item active">
+                <div class="row justify-content-start">
+                    {% for item in same_posts %}
+                    <div class="col-md-3">
+                        <a class="text-dark" href="{{ item.get_absolute_url }}">
+                            <div class="zoom cardtitle" style="position:relative">
+                                <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}"
+                                    style="height: 230px">
+                                <h5 class=" card-text text-light mb-0" style="background-color: rgba(0, 0, 0, 0.575);position:absolute; bottom:0;
+                                                    padding:10px 20px; width:100%; text-align:center;">
+                                    {{ item.title }}
+                                    <div class="row justify-content-around mt-3">
+                                        <small class=" card-text text-light mt-2">
+                                            <small><small>
+                                                    {% for x in item.category.all %}
+                                                    {% if item.category.all.count <= 1 %}
+                                                    {{ x.title }}
+                                                    {% elif item.category.all.count > 1 %}
+                                                    {% if forloop.first %}
+                                                    {% else %}
+                                                    |
+                                                    {% endif %}
+                                                    {{ x.title }}
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </small></small>
+                                        </small>
+                                        <!-- <small class=" card-text text-light">تعدادلایک ها : {{ item.post_like.count }}</small>
+                                                    <small class=" card-text text-light">بازدید ها : {{ item.post_viewed.count }}</small> -->
+                                        <!-- <img class="rounded-circle" src="{{ item.author.profile.image.url }}"
+                                                        alt="{{ item.author.username }}" style="width: 40px;height: 40px;"> -->
+                                    </div>
+
+                                </h5>
+
+                            </div>
+                        </a>
+
+                    </div>
+
+                    {% if forloop.counter|divisibleby:"4" and not forloop.last %}
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="row justify-content-start">
+                    {% endif %}
+                    {% endfor %}
+                </div>
+
+            </div>
+
+
+        </div>
+        <a class="carousel-control-prev mt-5" href="#carouselExampleControls"
+            style="width: 50px;background-color: rgba(0, 0, 0, 0.575);height: 50px;" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next mt-5" href="#carouselExampleControls"
+            style="width: 50px;background-color: rgba(0, 0, 0, 0.575);height: 50px;" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</section>
+
+<br><br>
+{% endblock %}
+
+<script>
+    // $(document).read(function () {
+    //     function updateText(btn, newCount, verb) {
+    //         btn.text(newCount + " " + verb)
+    //     }
+    //     $('#like-btn').click(function (e) {
+    //         e.preventDefault()
+    //         var this_ = $(this)
+    //         var likeUrl = this_.attr("data-href")
+    //         var likeCount = parseInt(this_.attr("data-likes"))
+    //         var addLike = likeCount + 1
+    //         var removeLike = likeCount - 1
+    //         $.ajax({
+    //             url: likeUrl,
+    //             type: "GET",
+    //             data: {},
+    //             success: function (data) {
+    //                 console.log(data)
+    //                 var newLikes;
+    //                 if (data.liked) {
+    //                     // add one like
+    //                     newLikes = likeCount + 1
+    //                     updateText(this_, addLike, "Unlike")
+
+    //                 } else {
+    //                     //remove one like
+    //                     newLikes = likeCount - 1
+    //                     updateText(this_, removeLike, "Like")
+    //                 }
+    //             }, error: function (error) {
+    //                 console.log(error)
+    //                 console.log("error")
+    //             }
+    //         })
+    //     })
+    // })
+
+    var rate_value;
+    if (document.getElementById('rc1').checked) {
+        rate_value = document.getElementById('rc1').value;
+    } else if (document.getElementById('rc2').checked) {
+        rate_value = document.getElementById('rc2').value;
+
+    } else if (document.getElementById('rc3').checked) {
+        rate_value = document.getElementById('rc3').value;
+    } else if (document.getElementById('rc4').checked) {
+        rate_value = document.getElementById('rc4').value;
+    } else if (document.getElementById('rc5').checked) {
+        rate_value = document.getElementById('rc5').value;
+    }
+
+    document.getElementById('results').innerHTML = rate_value;
+
+</script>

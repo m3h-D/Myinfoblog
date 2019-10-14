@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div dir="rtl">
+    <h4 class="text-right">ورود به سایت</h4>
+    <form class="uniForm offset-md-9 text-right" action="." method="post">{% csrf_token %}
+        {{ form|crispy }}
+        <div class="row mt-5">
+            <button class="btn btn-primary rounded-pill ml-5" type="submit">ورود</button>
+            <a href="{% url 'password_reset' %}">رمز عبور را فراموش کرده ام</a>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

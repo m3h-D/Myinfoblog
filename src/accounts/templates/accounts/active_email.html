@@ -1,0 +1,5 @@
+سلام {{ user.username }},
+برای فعال سازی اکانت خود وارد لینک زیر شوید :
+
+
+{{ protocol}}://{{ domain }}{% url 'accounts:activate' uidb64=uid token=token %}
