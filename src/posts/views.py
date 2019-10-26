@@ -64,8 +64,9 @@ def post_detail(request, post_id, post_slug, is_liked=False):
     rate_froms = None
     same_posts = Post.objects.filter(
         category__in=post.category.all()).exclude(id=post.id)
+    ip_address = get_client_ip(request)
     if request.user.is_authenticated:
-        if post.post_like.filter(user=request.user).exists():
+        if post.post_like.filter(user=request.user, ip_address=ip_address).exists():
             is_liked = True  # baraye range btn Post
 
         comment_forms = comment_form(
@@ -76,7 +77,6 @@ def post_detail(request, post_id, post_slug, is_liked=False):
         rate_froms = rate_form(request=request, instance=post)
         if rate_froms:
             return redirect(post.get_absolute_url())
-    ip_address = get_client_ip(request)
     if request.user.is_anonymous:
         # rang e btn like baraye post(anonymous_user)
         anonymous_user = post.post_like.filter(
