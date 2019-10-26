@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.template.defaultfilters import truncatewords_html, truncatewords, truncatechars_html
 from django.utils.html import strip_tags
 
-from .utils import get_client_ip
+from .utils import get_client_ip, likedislike_manager
 # Create your models here.
 
 
@@ -52,16 +52,8 @@ class LikeDislikeManager(models.Manager):
                     object_id=obj_id,
                     content=content,
                 )
-                if queryset.likedislike == 'like' and likedislike == 'like':
-                    queryset.delete()
-                elif queryset.likedislike == 'dislike' and likedislike == 'dislike':
-                    queryset.delete()
-                elif queryset.likedislike == 'like' and likedislike == 'dislike':
-                    queryset.likedislike = 'dislike'
-                    queryset.save()
-                elif queryset.likedislike == 'dislike' and likedislike == 'like':
-                    queryset.likedislike = 'like'
-                    queryset.save()
+                likedislike_manager(queryset, likedislike)
+
             except:
                 queryset = self.create(
                     user=user,
@@ -82,16 +74,17 @@ class LikeDislikeManager(models.Manager):
                     object_id=obj_id,
                     content=content,
                 )
-                if queryset.likedislike == 'like' and likedislike == 'like':
-                    queryset.delete()
-                elif queryset.likedislike == 'dislike' and likedislike == 'dislike':
-                    queryset.delete()
-                elif queryset.likedislike == 'like' and likedislike == 'dislike':
-                    queryset.likedislike = 'dislike'
-                    queryset.save()
-                elif queryset.likedislike == 'dislike' and likedislike == 'like':
-                    queryset.likedislike = 'like'
-                    queryset.save()
+                likedislike_manager(queryset, likedislike)
+                # if queryset.likedislike == 'like' and likedislike == 'like':
+                #     queryset.delete()
+                # elif queryset.likedislike == 'dislike' and likedislike == 'dislike':
+                #     queryset.delete()
+                # elif queryset.likedislike == 'like' and likedislike == 'dislike':
+                #     queryset.likedislike = 'dislike'
+                #     queryset.save()
+                # elif queryset.likedislike == 'dislike' and likedislike == 'like':
+                #     queryset.likedislike = 'like'
+                #     queryset.save()
             except:
                 queryset = self.create(
                     ip_address=ip_address,
@@ -108,36 +101,6 @@ class LikeDislikeManager(models.Manager):
         # if disliked_or_not:
         #     disliked_or_not.delete()
         return queryset
-
-    # def get_for_instance_model(self, instance, user, liked, disliked):
-    #     """bar assasse model create mkonim"""
-    #     content_type = ContentType.objects.get_for_model(instance.__class__)
-    #     obj_id = instance.id
-    #     queryset = super(LikeDislikeManager, self).filter(
-    #         user=user,
-    #         content_type=content_type,
-    #         object_id=obj_id,
-    #         liked=liked,
-    #         disliked=disliked,
-    #     ).first()
-
-    #     if queryset.liked == True:
-    #         queryset.delete()
-
-    #     else:
-    #         queryset.liked = True
-    #         queryset.save()
-
-    #     if queryset.disliked == True:
-    #         queryset.delete()
-
-    #     else:
-    #         queryset.disliked = True
-    #         queryset.save()
-    #         if queryset.liked == True:
-    #             queryset.delete()
-
-    #     return queryset
 
 
 class LikeDislike(models.Model):
@@ -175,45 +138,3 @@ class LikeDislike(models.Model):
             return self.user.username
         except:
             return self.ip_address
-    # def __str__(self):
-    #     """ bargardandane name karbar noe object va like ya dislike"""
-    #     try:
-    #         if self.likedislike == 'like':
-    #             return "{} پست ({}) را دوست دارد".format(self.user.username, self.content_object.title)
-    #         elif self.likedislike == 'dislike':
-    #             return "{} پست ({}) را دوست ندارد".format(self.user.username, self.content_object.title)
-    #     except:
-    #         if self.likedislike == 'like':
-    #             return "{} کامنت ({}) را دوست دارد".format(self.user.username, self.content_object.content)
-    #         elif self.likedislike == 'dislike':
-    #             return "{} کامنت ({}) را دوست ندارد".format(self.user.username, self.content_object.content)
-    #     finally:
-    #         if self.likedislike == 'like':
-    #             return "{}   را دوست دارد".format(self.ip_address)
-    #         elif self.likedislike == 'dislike':
-    #             return "{}   را دوست ندارد".format(self.ip_address)
-
-
-# liked_or_not = self.filter_by_model(instance=instance).filter(ip_address=ip_address, likedislike='like').first()
-# disliked_or_not = self.filter_by_model(instance=instance).filter(ip_address=ip_address, likedislike='dislike').first()
-# if request.user.is_authenticated:
-#     try:
-#         queryset = self.get(
-#             user=user,
-#             ip_address=ip_address,
-#             content_type=content_type,
-#             object_id=obj_id,
-#             content=content,
-#         )
-#         queryset.likedislike = likedislike
-#         queryset.save()
-
-#     except:
-#         queryset = self.create(
-#             user=user,
-#             ip_address=ip_address,
-#             content_type=content_type,
-#             object_id=obj_id,
-#             content=content,
-#             likedislike=likedislike
-#         )

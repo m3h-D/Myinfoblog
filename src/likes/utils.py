@@ -14,3 +14,20 @@ def get_client_ip(request):
             ip = proxies[0]
 
     return ip
+
+
+def likedislike_manager(queryset, likedislike):
+    """
+    baraye behine kardane code(dry)
+    """
+    if queryset.likedislike == 'like' and likedislike == 'like':
+        queryset.delete()
+    elif queryset.likedislike == 'dislike' and likedislike == 'dislike':
+        queryset.delete()
+    elif queryset.likedislike == 'like' and likedislike == 'dislike':
+        queryset.likedislike = 'dislike'
+        queryset.save()
+    elif queryset.likedislike == 'dislike' and likedislike == 'like':
+        queryset.likedislike = 'like'
+        queryset.save()
+    return queryset
