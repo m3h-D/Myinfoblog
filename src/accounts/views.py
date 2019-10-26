@@ -46,7 +46,11 @@ def logout_view(request, *args, **kwargs):
 
 
 def register_view(request):
-    """faghat uni ke login nakarde mitune register kone"""
+    """
+    faghat uni ke login nakarde mitune register kone
+    amma accountesh ghyre faal mishe va ye email barash mifreste
+    ta vaghti un email o active nakone is_active = False
+    """
     if request.user.is_authenticated:
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
     else:
@@ -65,12 +69,18 @@ def register_view(request):
             })
             to_email = form.cleaned_data.get('email')
             send_confirmation_email.delay(message, to_email)
-            return HttpResponse('Please confirm your email address to complete the registration')
+            return HttpResponse('لینک فعال سازی برای ایمیل شما ارسال شد')
 
     return render(request, 'accounts/register.html', {"form": form})
 
 
 def activate(request, uidb64, token):
+    """
+    dar soorate mojud budane user id e user o decode mikone va check mikone 
+    token ro ham hamrahe hamoon id e user check mikone
+    age dorost bashe user is_active = True va login mishe 
+    age na payame link na mootabar ast mide  
+    """
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
