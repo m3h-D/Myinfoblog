@@ -142,16 +142,20 @@ class Comments(models.Model):
     @property
     def comment_like(self):
         """baraye neshun dadane tedad e like ha estefade mishe"""
+        # likes = LikeDislike.objects.filter_by_model(
+        #     instance=self).filter(liked=True)
         likes = LikeDislike.objects.filter_by_model(
-            instance=self).filter(liked=True)
+            instance=self).filter(likedislike='like')
 
         return likes
 
     @property
     def comment_dislike(self):
         """baraye neshun dadane tedad e disloke ha estefade mishe"""
+        # dislikes = LikeDislike.objects.filter_by_model(
+        #     instance=self).filter(disliked=True)
         dislikes = LikeDislike.objects.filter_by_model(
-            instance=self).filter(disliked=True)
+            instance=self).filter(likedislike='dislike')
         return dislikes
 
     def add_to_like_comment(self, request, get_like=None):
@@ -160,8 +164,10 @@ class Comments(models.Model):
         Manager e Model e Like rush logic anjam mide (pak mikone).
         age ham like nashude bashe like e comment baraye request.user True mishe.
         """
+        # get_like = LikeDislike.objects.create_for_instance_model(
+        #     instance=self, request=request, liked=True, disliked=False)
         get_like = LikeDislike.objects.create_for_instance_model(
-            instance=self, request=request, liked=True, disliked=False)
+            instance=self, request=request, likedislike='like')
         return get_like
 
     def add_to_dislike_comment(self, request, get_dislike=None):
@@ -171,6 +177,8 @@ class Comments(models.Model):
         age baraye avvalin bar request.user in comment o dislike karde bud
         barash dislikesh True mishe.
         """
+        # get_dislike = LikeDislike.objects.create_for_instance_model(
+        #     instance=self, request=request, liked=False, disliked=True)
         get_dislike = LikeDislike.objects.create_for_instance_model(
-            instance=self, request=request, liked=False, disliked=True)
+            instance=self, request=request, likedislike='dislike')
         return get_dislike

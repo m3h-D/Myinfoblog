@@ -4,7 +4,7 @@ from .models import LikeDislike
 
 
 class LikeDislikeAdmin(admin.ModelAdmin):
-    list_display = ('username_or_ip', 'liked', 'disliked',
+    list_display = ('username_or_ip', 'likedislike',
                     'content_object', 'content_type', 'short_content')
 
     def username_or_ip(self, obj):

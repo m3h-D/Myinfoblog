@@ -18,24 +18,6 @@ User = get_user_model()
 # Create your models here.
 
 
-# class Rate(models.Model):
-#     """ye model e rating makhsoose Post(temperory)"""
-#     user = models.ForeignKey(User, related_name="rate",
-#                              on_delete=models.CASCADE, verbose_name='کاربر')
-#     RATING_LEVEL = (
-#         (1, 'خیلی بد'),
-#         (2, 'بد'),
-#         (3, 'متوسط'),
-#         (4, 'خوب'),
-#         (5, 'خیلی خوب'),
-#     )
-#     rating = models.IntegerField(choices=RATING_LEVEL, blank=True, default=1)
-#     timestamp = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return ("{}-{}").format(self.user.username, self.get_rating_display())
-
-
 class Category(models.Model):
     """ daste bandi e post ha"""
     title = models.CharField(
@@ -88,6 +70,7 @@ class Post(models.Model):
 
     @property
     def latest_posts(self):
+        """3 ta post akhar"""
         posts = Post.objects.filter(
             published=True).order_by('-created')[:3]
         return posts
@@ -127,13 +110,19 @@ class Post(models.Model):
 
     @property
     def post_like(self):
+        """neshun dadane post haye like shude"""
+        # likes = LikeDislike.objects.filter_by_model(
+        #     instance=self).filter(liked=True)
         likes = LikeDislike.objects.filter_by_model(
-            instance=self).filter(liked=True)
+            instance=self).filter(likedislike='like')
         return likes
 
     def add_to_like_post(self, request, get_like=None):
+        """like kardane post ha"""
+        # get_like = LikeDislike.objects.create_for_instance_model(
+        #     instance=self, request=request, liked=True, disliked=False)
         get_like = LikeDislike.objects.create_for_instance_model(
-            instance=self, request=request, liked=True, disliked=False)
+            instance=self, request=request, likedislike='like')
         return get_like
 
     def recommended_posts(self, request, same_post=None):
@@ -144,7 +133,9 @@ class Post(models.Model):
         """
         # liked haro count mikone mirize to count bar assasse hamoon order mikone
         same_post = UserTracker.objects.recommended_list(
-            request=request, instance=self).annotate(count=Count('likes__liked')).order_by('-count')
+            request=request, instance=self).annotate(count=Count('likes__likedislike')).order_by('-count')
+        # same_post = UserTracker.objects.recommended_list(
+        #     request=request, instance=self).annotate(count=Count('likes__likedislike')).order_by('-count')
         return same_post
 
     @property
@@ -169,28 +160,9 @@ class Post(models.Model):
 
     @property
     def post_rate(self, avg=0):
-        try:
-            user_count = Rate.objects.filter_by_model(
-                instance=self).annotate(Count('user')).count()
-            avg = sum(x.rating for x in Rate.objects.filter_by_model(
-                instance=self)) / int(user_count)
-        except ZeroDivisionError:
-            pass
-        f = ''
-        if avg <= 1.0:
-            f = "خیلی بد"
-        if 1.0 <= avg < 3.0:
-            f = "بد"
-        if 3.0 <= avg < 4.0:
-            f = "متوسط"
-        if 4.0 <= avg < 5.0:
-            f = "خوب"
-        if avg >= 5.0:
-            f = "خیلی خوب"
-        if avg == 0:
-            f = 'نظری داده نشده'
-
-        return float("%.1f" % round(avg, 2))
+        """emtiaz dehi be post bar assasse rate entekhab shude (az 1 ta 5) taghsim bar tedad e user haey ke be in post emtiaz dadan"""
+        average = Rate.objects.avg_rate(instance=self)
+        return average
 
     @property
     def rated_post(self):
