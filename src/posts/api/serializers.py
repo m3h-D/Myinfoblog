@@ -1,5 +1,6 @@
 from rest_framework import serializers
-
+from django.contrib.sites.shortcuts import get_current_site
+from urllib.parse import urlsplit
 from posts.models import Post
 from comments.api.serializers import CommentListSerializers
 from comments.models import Comments
@@ -24,7 +25,10 @@ class PostListSerializer(serializers.ModelSerializer):
         return str(obj.author.username)
 
     def get_avatar(self, obj):
-        a = ('http://127.0.0.1:8000', obj.author.profile.image.url)
+        request = self.context['request']
+        current_site = get_current_site(request)
+        protocol = urlsplit(request.build_absolute_uri(None)).scheme
+        a = (protocol + "://", current_site.domain, obj.author.profile.image.url)
         return ''.join(a)
 
 
@@ -45,7 +49,10 @@ class PostDetailSerializer(serializers.ModelSerializer):
         return obj.author.username
 
     def get_avatar(self, obj):
-        a = ('http://127.0.0.1:8000', obj.author.profile.image.url)
+        request = self.context['request']
+        current_site = get_current_site(request)
+        protocol = urlsplit(request.build_absolute_uri(None)).scheme
+        a = (protocol + "://", current_site.domain, obj.author.profile.image.url)
         return ''.join(a)
 
     def get_comments(self, obj):
