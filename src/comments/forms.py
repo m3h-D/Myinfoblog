@@ -50,7 +50,6 @@ def comment_form(request, instance, parent_obj=None):
         comment_form.save()
         return comment_form
 
-    # return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
     # form.instance.user = request.user
     # form.instance.content = form.cleaned_data['content']
     # form.instance.content_type = content_type
@@ -58,4 +57,3 @@ def comment_form(request, instance, parent_obj=None):
     # form.instance.parent = parent_obj
     # form.instance.uuid = uuid_generator(request)
     # form.save()
-    # return HttpResponseRedirect('')

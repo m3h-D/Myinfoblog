@@ -13,6 +13,7 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
+from urllib.parse import urlsplit
 
 
 User = get_user_model()
@@ -59,13 +60,14 @@ def register_view(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-
+            protocol = urlsplit(request.build_absolute_uri(None)).scheme
             current_site = get_current_site(request)
             message = render_to_string('accounts/active_email.html', {
                 'user': user,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
+                'protocol': protocol,
             })
             to_email = form.cleaned_data.get('email')
             send_confirmation_email.delay(message, to_email)

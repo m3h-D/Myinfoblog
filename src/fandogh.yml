@@ -1,0 +1,24 @@
+kind: ExternalService
+name: myinfoblog
+spec:
+  image_pull_policy: Always
+  port: 80
+  source:
+    context: .
+    media_path: static/media
+    project_type: django
+    python_version: '3.7'
+    static_path: static
+    wsgi: advance_blog.wsgi
+  volume_mounts:
+  - mount_path: /usr/src/app/static/media
+    sub_path: myinfoblog/media
+  # env:
+  #   - name: ad_blog
+  #       value: db
+  #   - name: Mysql_Password
+  #       value: 123456
+  #   - name: Mysql_User
+  #       value: root
+  #   - name: DB_Name
+  #       value: myDatabaseName     

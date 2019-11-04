@@ -34,13 +34,13 @@ def create_comment_serializer(user, object_id, instance, parent_id=None):
             model_qs = ContentType.objects.get(model=content_type)
             if not model_qs:
                 raise serializers.ValidationError(
-                    "this is not a valid content type")
-            SomeModel = model_qs.model_class()
+                    "چنین مدلی موجود نیست")
+            ModelType = model_qs.model_class()
             # obj_qs = Post.objects.filter(id=self.object_id)
-            obj_qs = SomeModel.objects.filter(id=object_id)
+            obj_qs = ModelType.objects.filter(id=object_id)
             if not obj_qs.exists():
                 raise serializers.ValidationError(
-                    "This id for this model does not exists")
+                    "چنین ای دی برای این مدل موجود نیست")
             return data
 
         def create(self, validated_data):
@@ -77,9 +77,9 @@ class CommentListSerializers(serializers.ModelSerializer):
     def get_user(self, obj):
         return obj.user.username
 
-    def get_avatar(self, obj):
-        a = ('http://127.0.0.1:8000', obj.user.profile.image.url)
-        return ''.join(a)
+    # def get_avatar(self, obj):
+    #     a = ('http://127.0.0.1:8000', obj.user.profile.image.url)
+    #     return ''.join(a)
 
     def get_reply_count(self, obj):
         try:
@@ -115,9 +115,9 @@ class CommentDetailSerializers(serializers.ModelSerializer):
     def get_user(self, obj):
         return obj.user.username
 
-    def get_avatar(self, obj):
-        a = ('http://127.0.0.1:8000', obj.user.profile.image.url)
-        return ''.join(a)
+    # def get_avatar(self, obj):
+    #     a = ('http://127.0.0.1:8000', obj.user.profile.image.url)
+    #     return ''.join(a)
 
     def get_replies(self, obj):
         if obj.parent:

@@ -121,7 +121,8 @@ DATABASES = {
         'USER': os.environ.get("DB_USER"),
         'PASSWORD': os.environ.get("DB_PASSWORD"),
         # 'PASSWORD': env("DB_PASSWORD"),
-        'HOST': 'db',
+        'HOST': 'db',  # ba docker
+        # 'HOST': '',  # bedoone docker
         'PORT': 5432,
 
     }
@@ -230,19 +231,10 @@ DIRECTORY = ''
 
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
-# CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_BROKER_URL = 'amqp://rabbitmq'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+# CELERY_BROKER_URL = 'amqp://rabbitmq' # ba docker
+# CELERY_BROKER_URL = 'amqp://localhost'  # bedoone docker
 # CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_RESULT_SERIALIZER = 'json'
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_TASK_SERIALIZER = 'pickle'
-
-# CELERY_BROKER_URL = 'redis://redis:6379'
-# CELERY_RESULT_BACKEND = 'redis://redis:6379'
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
 
 
 # SITE_ID = 1

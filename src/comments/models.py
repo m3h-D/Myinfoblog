@@ -41,8 +41,9 @@ class CommentManager(models.Manager):
         vase API content o bayad shabihe request begirm(validated_data.get('content')).
         """
         # content_type = ContentType.objects.get_for_model(instance.__class__)
-        content_type = ContentType.objects.filter(
-            model=instance).first()
+        content_type = ContentType.objects.get(
+            model=instance)
+        print(content_type)
         uuid = uuid_generator()
         # content_object = self.filter_by_model(instance=instance)
 

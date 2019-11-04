@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
 
-<div class="row justify-content-start">
+<div class="row justify-content-center">
 
     <div class="blog-page area-padding">
         <div class="row">
@@ -26,7 +26,7 @@
                                 <a href="{{ post.get_absolute_url }}">
                                     <div class="zoom cardtitle" style="position:relative">
                                         <img src="{{ post.image.url }}" class="card-img-top img-fluid"
-                                            alt="{{ post.title }}" style="height: 500px;width: 100%">
+                                            alt="{{ post.title }}" style="height: 500px;width: 810px">
                                         <h5 class="card-text text-light mb-0" style="background-color: rgba(0, 0, 0, 0.575);position:absolute; bottom:0;
                                                         padding:10px 20px; width:100%; text-align:center;">
                                             {{ post.title }}
@@ -59,15 +59,17 @@
 
                                     <a href="{% url 'bookmarks:add-to-bookmarke' post.id %}" class="text-dark"
                                         style="font-size: 24px">
-                                        {% for book in post.bookmarked_post %}
-                                        {% if book.user == request.user %}
-                                        <i class='fas fa-bookmark'></i>
-                                        {% else %}
-                                        <i class='far fa-bookmark'></i>
-                                        {% endif %}
-                                        {% empty %}
-                                        <i class='far fa-bookmark'></i>
-                                        {% endfor %}
+                                        <i class='
+                                {% for book in post.bookmarked_post %}
+                                {% if book.user == request.user %}
+                                fas 
+                                {% else %}
+                                far
+                                {% endif %}
+                                {% empty %}
+                                far
+                                {% endfor %}
+                                fa-bookmark'></i>
                                     </a>
 
                                 </span>

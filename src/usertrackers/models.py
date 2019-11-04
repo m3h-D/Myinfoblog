@@ -36,7 +36,7 @@ class UserTrackerManager(models.Manager):
             for category in same_category:
                 # az har category 3 ta post o faghat neshun bede
                 queryset = instance.__class__.objects.filter(
-                    category=category)[:3]
+                    category=category).annotate(count=models.Count('likes__likedislike')).order_by('-count')[:3]
                 try:
                     """ye session e listi misaze ke Model o bar assasse category e bala filter mikone"""
                     request.session['same_categories'] += list(queryset.values_list(

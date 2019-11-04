@@ -12,6 +12,11 @@ services:
       - POSTGRES_PASSWORD=POSTGRES_PASSWORD
   rabbitmq:
     image: rabbitmq:3.7-alpine
+  redis:
+    restart: always
+    image: redis:latest
+    expose:
+      - "6379"
   src:
     build:
       context: .
@@ -29,6 +34,7 @@ services:
     depends_on:
       - db
       - rabbitmq
+      - redis
       - celery
   celery:
     build: .
@@ -39,3 +45,4 @@ services:
     depends_on:
       - db
       - rabbitmq
+      - redis

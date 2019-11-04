@@ -68,12 +68,12 @@ class Post(models.Model):
         """return kardane name nevisande va post"""
         return "پست {} توسط {}".format(self.title, self.author)
 
-    @property
-    def latest_posts(self):
-        """3 ta post akhar"""
-        posts = Post.objects.filter(
-            published=True).order_by('-created')[:3]
-        return posts
+    # @property
+    # def latest_posts(self):
+    #     """3 ta post akhar"""
+    #     posts = Post.objects.filter(
+    #         published=True).order_by('-created')[:3]
+    #     return posts
 
     @property
     def comments(self):
@@ -86,15 +86,15 @@ class Post(models.Model):
         comments = Comments.objects.filter_by_model(instance=self)
         return comments
 
-    @property
-    def get_content_type(self):
-        """
-        baraye sakhtane form to Post bayad ContentType o begirim ta befahmim
-        commenti ke dare neveshte mishe vase kodom post bere
-        """
+    # @property
+    # def get_content_type(self):
+    #     """
+    #     baraye sakhtane form to Post bayad ContentType o begirim ta befahmim
+    #     commenti ke dare neveshte mishe vase kodom post bere
+    #     """
 
-        content_type = ContentType.objects.get_for_model(self.__class__)
-        return content_type
+    #     content_type = ContentType.objects.get_for_model(self.__class__)
+    #     return content_type
 
     def get_absolute_url(self):
         """reverse kardane be detail e post"""
@@ -135,7 +135,7 @@ class Post(models.Model):
         same_post = UserTracker.objects.recommended_list(
             request=request, instance=self).annotate(count=Count('likes__likedislike')).order_by('-count')
         # same_post = UserTracker.objects.recommended_list(
-        #     request=request, instance=self).annotate(count=Count('likes__likedislike')).order_by('-count')
+        #     request=request, instance=self).annotate(count=Count('likes__liked')).order_by('-count')
         return same_post
 
     @property
