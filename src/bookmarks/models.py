@@ -58,5 +58,5 @@ class BookMark(models.Model):
         except:
             return self.user.username
 
-    def get_absolute_url(self):
-        return reverse("bookmarks:add-to-bookmarke", args=[self.object_id])
+    # def get_delete_url(self):
+    #     return reverse("bookmarks:add-to-bookmarke", args=[self.object_id])
