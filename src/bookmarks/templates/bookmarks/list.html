@@ -23,8 +23,9 @@
         <tr>
 
             <th scope="row">{{ bookmark.content_object.id }}</th>
-            <td><a href="{{ bookmark.get_absolute_url }}" style="font-size: 24px"
-                    class="text-danger rounded-pill mt-5"><i class="fas fa-trash-alt"></i></a></td>
+            <td><a href="{% url 'bookmarks:delete-from-bookmark' bookmark.id %}" style="font-size: 24px"
+                    class="text-danger rounded-pill mt-5"><i class="fas fa-trash-alt"></i></a>
+            </td>
             <td><a href="{{ bookmark.content_object.get_absolute_url }}" style="font-size: 24px"
                     class="text-dark rounded-pill mt-5"><i class="fas fa-glasses"></i></a></td>
             <td dir="rtl">{{ bookmark.content_object.content|safe|truncatechars_html:15 }}</td>

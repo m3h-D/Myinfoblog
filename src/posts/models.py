@@ -117,14 +117,6 @@ class Post(models.Model):
             instance=self).filter(likedislike='like')
         return likes
 
-    def add_to_like_post(self, request, get_like=None):
-        """like kardane post ha"""
-        # get_like = LikeDislike.objects.create_for_instance_model(
-        #     instance=self, request=request, liked=True, disliked=False)
-        get_like = LikeDislike.objects.create_for_instance_model(
-            instance=self, request=request, likedislike='like')
-        return get_like
-
     def recommended_posts(self, request, same_post=None):
         """
         category haye pishnahadi bar assasse view e user to har post.
@@ -169,3 +161,11 @@ class Post(models.Model):
         user_rated = Rate.objects.filter_by_model(
             instance=self)
         return user_rated
+
+    # def add_to_like_post(self, request, get_like=None):
+    #     """like kardane post ha"""
+    #     # get_like = LikeDislike.objects.create_for_instance_model(
+    #     #     instance=self, request=request, liked=True, disliked=False)
+    #     get_like = LikeDislike.objects.create_for_instance_model(
+    #         instance=self, request=request, likedislike='like')
+    #     return get_like

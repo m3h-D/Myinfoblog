@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% block header %}
 {% load static %}
+{% load like_tags %}
+{% load bookmark_tags %}
 <img src="{% static 'media/detail.jpg' %}" alt="" style="width: 100%;height: 750px">
 {% endblock %}
 {% block detail %}
@@ -259,10 +261,10 @@
                             {% endif %}
                         </div>
                         <div class="row justify-content-around">
-                            <a href="{% url 'bookmarks:add-to-bookmarke' post.id %}" class="text-dark mt-md-5"
-                                style="font-size: 24px">
+                            <a href="{% url 'bookmarks:add-to-bookmarke' id=post.id model_type='post' %}"
+                                class="text-dark mt-md-5" style="font-size: 24px">
 
-                                <i class='
+                                <!-- <i class='
                                 {% for book in post.bookmarked_post %}
                                 {% if book.user == request.user %}
                                 fas 
@@ -272,10 +274,34 @@
                                 {% empty %}
                                 far
                                 {% endfor %}
-                                fa-bookmark'></i>
+                                fa-bookmark'></i> -->
+                                <i class="
+                                {% bookmark_btn_color id=post.id model_type='post' as bookmarkcolor %}
+                                {% if bookmarkcolor %}
+                                fas
+                                {% else %}
+                                far
+                                {% endif %}
+                                fa-bookmark"></i>
+
+                            </a>
+                            <a id="like-btn" href="{% url 'likes:add-to-like' id=post.id model_type='post' %}"
+                                data-href="{{ post.get_absolute_api_url }}" data-likes="{{ post.post_like.count }}"
+                                class="text-danger mt-md-5" style="font-size: 24px"><i class="
+                                {% like_btn_color id=post.id model_type='post' as likecolor %}
+                                {% if likecolor %}
+                                fas
+                                {% else %}
+                                far
+                                {% endif %}
+                            fa-heart"></i>
+                                <span style="font-size: 20px">
+                                    {{ post.post_like.count }}
+
+                                </span>
                             </a>
 
-                            <a id="like-btn" href="{% url 'likes:add-to-like-post' post.id%}"
+                            <!-- <a id="like-btn" href=""
                                 data-href="{{ post.get_absolute_api_url }}" data-likes="{{ post.post_like.count }}"
                                 class="text-danger mt-md-5" style="font-size: 24px"><i class="
                                 {% for like in post.post_like %}
@@ -301,7 +327,7 @@
                                     {{ post.post_like.count }}
 
                                 </span>
-                            </a>
+                            </a> -->
 
 
                             <a class="text-right mt-md-5" style="font-size: 24px" dir="rtl">
@@ -379,10 +405,10 @@
 
                                         <!-- ------------------------------- like kardane commentha ------------------- -->
 
-                                        <a href="{% url 'likes:add-to-like-comment' comment.id %}"
+                                        <a href="{% url 'likes:add-to-like' id=comment.id model_type='comments' %}"
                                             class="text-success text-decoration-none mr-3 mt-2" style="font-size: 19px">
 
-                                            <i class="
+                                            <!-- <i class="
                                                     {% for like in comment.comment_like %}
                                                     {% if request.user.is_anonymous %}
                                                     {% if like.ip_address == ip_address %}
@@ -401,7 +427,16 @@
                                                     {% empty %}
                                                     far
                                                     {% endfor %}
+                                                    fa-thumbs-up"></i> -->
+                                            <i class="
+                                                    {% like_btn_color id=comment.id model_type='comments' as likecolor %}
+                                                    {% if likecolor %}
+                                                    fas
+                                                    {% else %}
+                                                    far
+                                                    {% endif %}
                                                     fa-thumbs-up"></i>
+
 
                                             <span class="badge badge-light">{{comment.comment_like.count}}</span>
 
@@ -413,28 +448,16 @@
 
 
 
-                                        <a href="{% url 'likes:add-to-dislike' comment.id %}"
+                                        <a href="{% url 'likes:add-to-dislike' id=comment.id model_type='comments' %}"
                                             class="text-danger text-decoration-none mr-5 mt-2" style="font-size: 19px">
 
                                             <i class="
-                                                    {% for dislike in comment.comment_dislike %}
-                                                    {% if request.user.is_anonymous %}
-                                                    {% if dislike.ip_address == ip_address %}
-                                                    fas 
-                                                    {% else %}
-                                                    far
-                                                    {% endif %}
-                                                    {% endif %}
-                                                    {% if request.user.is_authenticated %}
-                                                    {% if dislike.user == request.user or dislike.ip_address == ip_address %}
-                                                    fas
-                                                    {% else %}
-                                                    far
-                                                    {% endif %}
-                                                    {% endif %}
-                                                    {% empty %}
-                                                    far
-                                                    {% endfor %}
+                                            {% dislike_btn_color id=comment.id model_type='comments' as dislikecolor %}
+                                            {% if dislikecolor %}
+                                            fas
+                                            {% else %}
+                                            far
+                                            {% endif %}
                                                     fa-thumbs-down"></i>
 
 
@@ -481,28 +504,16 @@
 
 
 
-                                                            <a href="{% url 'likes:add-to-like-comment' child.id %}"
+                                                            <a href="{% url 'likes:add-to-like' id=child.id model_type='comments' %}"
                                                                 class="text-success text-decoration-none mr-3"
                                                                 style="font-size: 19px">
                                                                 <i class="
-                                                                {% for like in child.comment_like %}
-                                                                {% if request.user.is_anonymous %}
-                                                                {% if like.ip_address == ip_address %}
+                                                                {% like_btn_color id=child.id model_type='comments' as likecolor %}
+                                                                {% if likecolor %}
                                                                 fas
                                                                 {% else %}
                                                                 far
                                                                 {% endif %}
-                                                                {% endif %}
-                                                                {% if request.user.is_authenticated %}
-                                                                {% if like.user == request.user or like.ip_address == ip_address %}
-                                                                fas
-                                                                {% else %}
-                                                                far
-                                                                {% endif %}
-                                                                {% endif %}
-                                                                {% empty %}
-                                                                far
-                                                                {% endfor %}
                                                                 fa-thumbs-up"></i>
                                                                 <span
                                                                     class="badge badge-light">{{child.comment_like.count}}</span>
@@ -513,10 +524,10 @@
 
                                                             <!-- -------------------------------- dislike kardane comment ha ---------------------- -->
 
-                                                            <a href="{% url 'likes:add-to-dislike' child.id %}"
+                                                            <a href="{% url 'likes:add-to-dislike' id=child.id model_type='comments' %}"
                                                                 class="text-danger text-decoration-none"
                                                                 style="font-size: 19px">
-                                                                <i class="
+                                                                <!-- <i class="
                                                                 {% for dislike in child.comment_dislike %}
                                                                 {% if request.user.is_anonymous %}
                                                                 {% if dislike.ip_address == ip_address %}
@@ -535,7 +546,16 @@
                                                                 {% empty %}
                                                                 far
                                                                 {% endfor %}
+                                                                fa-thumbs-down"></i> -->
+                                                                <i class="
+                                                                {% dislike_btn_color id=child.id model_type='comments' as dislikecolor %}
+                                                                {% if dislikecolor %}
+                                                                fas
+                                                                {% else %}
+                                                                far
+                                                                {% endif %}
                                                                 fa-thumbs-down"></i>
+
                                                                 <span
                                                                     class="badge badge-light">{{child.comment_dislike.count}}</span>
                                                             </a>
@@ -606,28 +626,16 @@
                                                                 <!-- ------------------------------- like kardane commentha ------------------- -->
 
 
-                                                                <a href="{% url 'likes:add-to-like-comment' grandchild.id %}"
+                                                                <a href="{% url 'likes:add-to-like' id=grandchild.id model_type='comments' %}"
                                                                     class="text-success text-decoration-none mr-3"
                                                                     style="font-size: 19px">
                                                                     <i class="
-                                                                    {% for like in grandchild.comment_like %}
-                                                                    {% if request.user.is_anonymous %}
-                                                                    {% if like.ip_address == ip_address %}
+                                                                    {% like_btn_color id=grandchild.id model_type='comments' as likecolor %}
+                                                                    {% if likecolor %}
                                                                     fas
                                                                     {% else %}
                                                                     far
                                                                     {% endif %}
-                                                                    {% endif %}
-                                                                    {% if request.user.is_authenticated %}
-                                                                    {% if like.user == request.user or like.ip_address == ip_address %}
-                                                                    fas
-                                                                    {% else %}
-                                                                    far
-                                                                    {% endif %}
-                                                                    {% endif %}
-                                                                    {% empty %}
-                                                                    far
-                                                                    {% endfor %}
                                                                     fa-thumbs-up"></i>
                                                                     <span
                                                                         class="badge badge-light">{{grandchild.comment_like.count}}</span>
@@ -637,28 +645,16 @@
                                                                 <!-- -------------------------------- dislike kardane comment ha ---------------------- -->
 
 
-                                                                <a href="{% url 'likes:add-to-dislike' grandchild.id %}"
+                                                                <a href="{% url 'likes:add-to-dislike' id=grandchild.id model_type='comments' %}"
                                                                     class="text-danger text-decoration-none"
                                                                     style="font-size: 19px">
                                                                     <i class="
-                                                                    {% for dislike in grandchild.comment_dislike %}
-                                                                    {% if request.user.is_anonymous %}
-                                                                    {% if dislike.ip_address == ip_address %}
-                                                                    fas 
-                                                                    {% else %}
-                                                                    far
-                                                                    {% endif %}
-                                                                    {% endif %}
-                                                                    {% if request.user.is_authenticated %}
-                                                                    {% if dislike.user == request.user or dislike.ip_address == ip_address %}
+                                                                    {% dislike_btn_color id=grandchild.id model_type='comments' as dislikecolor %}
+                                                                    {% if dislikecolor %}
                                                                     fas
                                                                     {% else %}
                                                                     far
                                                                     {% endif %}
-                                                                    {% endif %}
-                                                                    {% empty %}
-                                                                    far
-                                                                    {% endfor %}
                                                                     fa-thumbs-down"></i>
                                                                     <span
                                                                         class="badge badge-light">{{grandchild.comment_dislike.count}}</span>

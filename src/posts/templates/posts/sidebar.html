@@ -46,7 +46,7 @@
 
 <body>
     <br>
-    <div class="page-head-blog">
+    <div class="page-head-blog pr-3 pl-0">
         <div class="single-blog-page">
             <!-- search option start -->
             <form action="#">
@@ -67,7 +67,7 @@
                     <!-- start single post -->
 
                     {% for lasts in late_post_sidebar %}
-                    <div class="recent-single-post">
+                    <div dir="rtl" class="recent-single-post">
                         <div class="post-img">
                             <a href="{{ lasts.get_absolute_url }}">
                                 <img class="mt-1" src="{{ lasts.image.url }}" alt="" style="height: 80px;width: 110px">
@@ -77,7 +77,7 @@
                             <h6><a class="text-dark text-decoration-none"
                                     href="{{ lasts.get_absolute_url }}">{{ lasts.title }}</a></h6>
                         </div>
-                        <p dir="rtl">{{ lasts.content|safe|truncatechars_html:10 }}</p>
+                        <p class="text-right">{{ lasts.content|safe|truncatechars_html:10 }}</p>
                         <div class="row justify-content-around">
                             <span>{{ lasts.post_viewed.count }} <i class="far fa-eye"></i></span>
                             <span>{{ lasts.post_like.count }} <i class="fas fa-heart"></i></span>

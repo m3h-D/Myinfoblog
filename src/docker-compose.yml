@@ -10,18 +10,19 @@ services:
       - POSTGRES_DB=POSTGRES_DB
       - POSTGRES_USER=POSTGRES_USER
       - POSTGRES_PASSWORD=POSTGRES_PASSWORD
-  rabbitmq:
-    image: rabbitmq:3.7-alpine
+  # rabbitmq:
+  #   image: rabbitmq:3.7-alpine
   redis:
     restart: always
     image: redis:latest
     expose:
       - "6379"
   src:
+    # restart: always
     build:
       context: .
     volumes:
-      - ./:/src
+      - .:/src
     # command: sh -c "python manage.py runserver 0.0.0.0:8000"
     command: sh -c "gunicorn advance_blog.wsgi -b 0.0.0.0:8000"
     # command: sh -c "gunicorn advance_blog.wsgi:application --bind 0.0.0.0:8000"
@@ -33,7 +34,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
-      - rabbitmq
+      # - rabbitmq
       - redis
       - celery
   celery:
@@ -44,5 +45,5 @@ services:
       - .:/src
     depends_on:
       - db
-      - rabbitmq
+      # - rabbitmq
       - redis

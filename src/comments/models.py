@@ -159,27 +159,27 @@ class Comments(models.Model):
             instance=self).filter(likedislike='dislike')
         return dislikes
 
-    def add_to_like_comment(self, request, get_like=None):
-        """
-        darsoorati ke commenti like shude bashe gerefte mishe va
-        Manager e Model e Like rush logic anjam mide (pak mikone).
-        age ham like nashude bashe like e comment baraye request.user True mishe.
-        """
-        # get_like = LikeDislike.objects.create_for_instance_model(
-        #     instance=self, request=request, liked=True, disliked=False)
-        get_like = LikeDislike.objects.create_for_instance_model(
-            instance=self, request=request, likedislike='like')
-        return get_like
+    # def add_to_like_comment(self, request, get_like=None):
+    #     """
+    #     darsoorati ke commenti like shude bashe gerefte mishe va
+    #     Manager e Model e Like rush logic anjam mide (pak mikone).
+    #     age ham like nashude bashe like e comment baraye request.user True mishe.
+    #     """
+    #     # get_like = LikeDislike.objects.create_for_instance_model(
+    #     #     instance=self, request=request, liked=True, disliked=False)
+    #     get_like = LikeDislike.objects.create_for_instance_model(
+    #         instance=self, request=request, likedislike='like')
+    #     return get_like
 
-    def add_to_dislike_comment(self, request, get_dislike=None):
-        """
-        age commenti dislike shude bud gerefte mishe to Manager e Model e Like
-        Logicash anjam mishe (pak mishe).
-        age baraye avvalin bar request.user in comment o dislike karde bud
-        barash dislikesh True mishe.
-        """
-        # get_dislike = LikeDislike.objects.create_for_instance_model(
-        #     instance=self, request=request, liked=False, disliked=True)
-        get_dislike = LikeDislike.objects.create_for_instance_model(
-            instance=self, request=request, likedislike='dislike')
-        return get_dislike
+    # def add_to_dislike_comment(self, request, get_dislike=None):
+    #     """
+    #     age commenti dislike shude bud gerefte mishe to Manager e Model e Like
+    #     Logicash anjam mishe (pak mishe).
+    #     age baraye avvalin bar request.user in comment o dislike karde bud
+    #     barash dislikesh True mishe.
+    #     """
+    #     # get_dislike = LikeDislike.objects.create_for_instance_model(
+    #     #     instance=self, request=request, liked=False, disliked=True)
+    #     get_dislike = LikeDislike.objects.create_for_instance_model(
+    #         instance=self, request=request, likedislike='dislike')
+    #     return get_dislike
