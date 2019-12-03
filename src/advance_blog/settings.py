@@ -16,11 +16,11 @@ import environ
 import django_heroku
 # import django_heroku
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
-# reading .env file
+# env = environ.Env(
+#     # set casting, default value
+#     DEBUG=(bool, False)
+# )
+# # reading .env file
 environ.Env.read_env()
 
 
@@ -100,7 +100,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'posts.context_processors.post_sidebar'
+                'posts.context_processors.post_sidebar',
+                'posts.context_processors.comments_counter'
             ],
         },
     },
@@ -172,12 +173,12 @@ LOGIN_URL = '/accounts/login/'
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-    '/advance_blog/src/static/',
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+    # '/advance_blog/src/static/',
 
-    os.path.join(BASE_DIR, 'static', 'media')
-]
+    os.path.join(BASE_DIR, 'static', 'media'),
+)
 
 
 TINYMCE_DEFAULT_CONFIG = {

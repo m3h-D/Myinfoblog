@@ -17,15 +17,16 @@ def rate_form(request, instance, rates=None):
     content_type = ContentType.objects.get_for_model(instance.__class__)
     user = Rate.objects.filter_by_model(
         instance=instance).filter(user=request.user)
-    form = RateForm(request.POST or None)
+    rate_form = RateForm(request.POST or None)
     if request.method == 'POST':
-        if form.is_valid():
+        if rate_form.is_valid():
             if user.exists():
                 pass
             else:
-                rates = form.save(commit=False)
+                rates = rate_form.save(commit=False)
                 rates.user = request.user
                 rates.content_type = content_type
                 rates.object_id = instance.id
                 rates.save()
-                return rates
+                # return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+            return rates
