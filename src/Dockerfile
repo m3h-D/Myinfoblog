@@ -36,10 +36,6 @@ ENV PORT=8000
 #     apt-get clean && \
 #     rm -rf /var/lib/apt/lists/*
 
-# ENV POSTGRES_USER postgres
-# ENV POSTGRES_PASSWORD pandoras.0
-# ENV POSTGRES_DB blog
-
 
 # install environment dependencies
 RUN pip3 install --upgrade pip 
