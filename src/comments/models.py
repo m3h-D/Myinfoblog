@@ -116,6 +116,7 @@ class Comments(models.Model):
     uuid = models.CharField(max_length=200, unique=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     objects = CommentManager()
+    approved = models.BooleanField(default=False, verbose_name='تایید شده')
 
     class Meta:
         """order kardane commentha barasase zamane sakht"""
@@ -132,7 +133,7 @@ class Comments(models.Model):
 
     def children(self):
         """comment haye marboot be parent o barmigardoone """
-        return Comments.objects.filter(parent=self)
+        return Comments.objects.filter(parent=self, approved=True)
 
     @property
     def is_parent(self):

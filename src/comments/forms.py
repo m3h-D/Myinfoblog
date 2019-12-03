@@ -1,5 +1,5 @@
 from django import forms
-from django.shortcuts import redirect
+from django.shortcuts import redirect, reverse
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 
@@ -39,16 +39,18 @@ def comment_form(request, instance, parent_obj=None):
         if parent_qs.exists():
             parent_obj = parent_qs.first()
     content_type = ContentType.objects.get_for_model(instance.__class__)
-    form = CommentForm(request.POST or None)
-    if form.is_valid():
-        comment_form = form.save(commit=False)
-        comment_form.user = request.user
-        comment_form.content_type = content_type
-        comment_form.object_id = instance.id
-        comment_form.parent = parent_obj
-        comment_form.uuid = uuid_generator()
-        comment_form.save()
-        return comment_form
+    comments_form = CommentForm(request.POST or None)
+    # if request.method == "POST":
+    if comments_form.is_valid():
+        comments_form.instance.user = request.user
+        comments_form.instance.content_type = content_type
+        comments_form.instance.object_id = instance.id
+        comments_form.instance.parent = parent_obj
+        comments_form.instance.uuid = uuid_generator()
+        comments_form.save()
+        # return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    # else:
+        return comments_form
 
     # form.instance.user = request.user
     # form.instance.content = form.cleaned_data['content']
