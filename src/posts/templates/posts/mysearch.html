@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block header %}
+{% load static %}
+<img src="{% static 'media/list.jpg'%}" alt="" style="width: 100%;height: 750px">
+{% endblock %}
+{% block content %}
+{% if query %}
+<h1>Posts containing "{{	query	}}"</h1>
+<h3>
+    {% with results.count as total_results %}
+    Found {{ total_results }} result{{ total_results|pluralize }}
+    {%	endwith	%}
+</h3>
+<form action="." method="GET">
+    <input type="search" name="results" value="{{ request.GET.results }}" placeholder="جستجو">
+    <button class="button" type="submit">
+        <i class="fa fa-search"></i>
+    </button>
+</form>
+<!-- <h4><a	href="{{	post.get_absolute_url	}}">{{	post.title	}}</a></h4>	
+-->
+<div dir="rtl" class="row">
+    {% for post in results %}
+    <div dir="rtl" class="col-md-4 mb-4">
+        <div class="card">
+            <a class="text-dark" href="{{ post.get_absolute_url }}">
+                <div class="zoom cardtitle" style="position:relative">
+                    <img src="{{ post.image.url }}" class="card-img-top responsive-img" alt="" style="height: 300px">
+                    <h5 class="card-text text-light mb-0" style="background-color: rgba(0, 0, 0, 0.575);position:absolute; bottom:0;
+                                      padding:10px 20px; width:100%; text-align:center;">
+                        {{ post.title }}
+
+                        <div class="row justify-content-center mt-2">
+                            <small class=" card-text text-light" style="height: 0%">
+                                {{ post.comments.count }} <i class="far fa-comments"></i></small>
+                            <small class=" card-text text-light mr-5" style="height: 0%">
+                                {{ post.post_like.count }} <i class="fas fa-heart"></i></small>
+                            <small class=" card-text text-light  mr-5" style="height: 0%">
+                                {{ post.post_viewed.count }} <i class="far fa-eye"></i></small>
+                        </div>
+
+                    </h5>
+
+                </div>
+            </a>
+            <div class="card-body">
+                <div class="row justify-content-around">
+                    <p class="text-muted ">
+                        <small><b>
+                                {% for x in post.category.all %}
+                                {% if post.category.all.count <= 1 %}
+                                {{ x.title }}
+                                {% elif post.category.all.count > 1 %}
+                                {% if forloop.first %}
+                                {% else %}
+                                |
+                                {% endif %}
+                                {{ x.title }}
+                                {% endif %}
+                                {% endfor %} </b></small>
+                    </p>
+                    <p class="text-muted"><small>{{ post.created }}</small></p>
+                </div>
+                <hr class="my-1">
+
+                <p class="card-text">{{ post.content|safe|truncatechars_html:"10"}}</p>
+
+            </div>
+            <div class="card-footer" style="text-align: right">
+                <img class="offset-sm-1 rounded-circle" src="{{ post.author.profile.image.url }}"
+                    alt="{{ post.author.username }}" style="width: 60px;height: 60px;">
+                <small class="offset-sm-1 text-right"><strong>{{ post.author.username }}</strong></small>
+                <small class="text-right" dir="rtl">{{ post.created|timesince }} پیش</small>
+
+
+
+            </div>
+        </div>
+    </div>
+    {%	empty	%}
+    <p>There are no results for your query.</p>
+    {%	endfor	%}
+</div>
+<!-- {{	post.body|truncatewords:5	}}				 -->
+<!-- <p><a href="">Search again</a></p>
+{%	else	%}
+<h1>Search for posts</h1>
+<form action="." method="get">
+    <input type="search" name="query" value="{{ request.GET.query }}" id="" placeholder="جستجو">
+    <button class="button" type="submit">
+        <i class="fa fa-search"></i>
+    </button>
+</form>
+{%	endif	%} -->
+{% endblock %}
