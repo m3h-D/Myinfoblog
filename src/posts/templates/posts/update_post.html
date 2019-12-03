@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br><br><br>
+
+{% for field, errors in update_form.errors.items %}
+{% for error in errors %}
+{{ error }}
+
+{% endfor %}
+{% for error in field %}
+{{error}}
+{% endfor %}
+{% endfor %}
+
+<div class="row" dir="rtl">
+    {{ update_form.media}}
+    <form action="." method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p><label for="id_title">عنوان:</label> <input class="form-control" type="text" name="title"
+                value="{{update_form.instance.title}}" maxlength="120" required="" id="id_title"></p>
+        <p><label for="id_image">تصویر عنوان:</label> کنونی: <a href="{{update_form.instance.image.url}}">ff.jpg</a><br>
+
+
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" name="image" accept="image/*" id="id_image">
+                <label class="custom-file-label" for="id_image">یک تصویر انتخاب کنید</label>
+            </div>
+        </p>
+
+        <!-- {{ update_form.category}} -->
+        <p><label for="id_category">دسته:</label>
+            <div class="form-group">
+                <select class="form-control" name="category" required id="id_category" multiple>
+                    {% for category in categories %}
+                    <option {% for cat in update_form.instance.category.all %} {% if cat == category %} selected
+                        {% endif %}{% endfor %} value="{{category.id}}">
+                        {{category.title}}</option>
+
+                    {% endfor %}
+
+                </select>
+            </div>
+        </p>
+
+
+        {{update_form.content}}
+
+        <p><label for="id_tags">تگ ها:</label> <input class="form-control" type="text" name="tags"
+                value="{% for tag in update_form.instance.tags %}{{tag}} , {%empty%}{% endfor %}" id="id_tags"></p>
+        <p><label for="id_published">منتشر شده</label>
+            {{update_form.published}}</p>
+        <p><label for="id_special">ویژه</label>
+            {{update_form.special}}</p>
+        <!-- {{ update_form.as_p }} -->
+        <input class="btn btn-info" type="submit" value="ویرایش">
+        <!-- <button class="btn btn-info" type="submit">ویرایش</button> -->
+
+    </form>
+</div>
+{% endblock %}

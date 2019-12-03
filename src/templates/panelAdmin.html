@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .postcontent img {
+        width: 100%;
+    }
+</style>
+
+<br><br><br>
+<div dir="rtl" class="row">
+    <div class="col-3">
+        <div class="list-group" id="list-tab" role="tablist">
+            <a class="list-group-item text-right list-group-item-action active" id="list-comments-list"
+                data-toggle="list" href="#list-comments" role="tab" aria-controls="comments">کامنت ها<span
+                    class="badge badge-danger mr-5 badge-pill">{{ comment_counter }}</span></a>
+            <a class="list-group-item text-right list-group-item-action" id="list-posts-list" data-toggle="list"
+                href="#list-posts" role="tab" aria-controls="posts"> پست ها <span
+                    class="badge badge-danger mr-5 badge-pill">{{ posts|length }}</span></a>
+            <a class="list-group-item text-right list-group-item-action" id="list-addpost-list" data-toggle="list"
+                href="#list-addpost" role="tab" aria-controls="addpost">اضافه کردن پست جدید</a>
+            <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list"
+                href="#list-settings" role="tab" aria-controls="settings">Settings</a>
+        </div>
+    </div>
+    <div dir="ltr" class="col-8">
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="list-comments" role="tabpanel" aria-labelledby="list-home-list">
+                <table class="table text-right">
+                    <caption>کامنت های تایید نشده</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">حذف</th>
+                            <th scope="col">تایید</th>
+                            <th scope="col">به</th>
+                            <th scope="col">در</th>
+                            <th scope="col">کامنت</th>
+                            <th scope="col">کاربر</th>
+                            <th scope="col">#</th>
+                        </tr>
+                    </thead>
+                    {% for comment in comments %}
+                    <tbody>
+                        <tr>
+                            <td><a class="btn btn-sm btn-danger text-light"
+                                    href="{% url 'comments:delete-comment' id=comment.id %}"> حذف </a></td>
+                            <td> <a class="btn btn-sm btn-success text-light"
+                                    href="{% url 'comments:approve-comment' id=comment.id %}"> تایید </a>
+                            </td>
+                            <td>{{ comment.parent }}</td>
+                            <td>{{ comment.content_object }}</td>
+                            <td>
+                                <!-- {{ comment.content|truncatewords:8 }} -->
+
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-default" data-toggle="modal"
+                                    data-target="#{{comment.uuid}}">
+                                    {{ comment.content|truncatewords:8 }}
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="{{comment.uuid}}" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalCenterTitle">کامنت</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body text-right">
+                                                {{ comment.content }}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a class="btn btn-danger text-light"
+                                                    href="{% url 'comments:delete-comment' id=comment.id %}"> حذف </a>
+                                                <a class="btn btn-success text-light"
+                                                    href="{% url 'comments:approve-comment' id=comment.id %}"> تایید
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </td>
+                            <td>{{ comment.user }}</td>
+                            <th scope="row">{{ comment.id }}</th>
+                        </tr>
+                    </tbody>
+                    {% empty %}
+                    {% endfor %}
+                </table>
+            </div>
+            <div dir="ltr" class="tab-pane fade" id="list-posts" role="tabpanel" aria-labelledby="list-profile-list">
+
+
+                <table class="table text-right">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">محتوی</th>
+                            <th scope="col">حذف</th>
+                            <th scope="col">ویرایش</th>
+                            <th scope="col">عنوان</th>
+                            <th scope="col">عکس</th>
+                            <th scope="col">#</th>
+                        </tr>
+                    </thead>
+                    {% for post in posts %}
+                    <tbody>
+                        <tr>
+                            <td>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-default text-primary" data-toggle="modal"
+                                    data-target="#{{ post.slug }}">
+                                    پیش نمایش
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="{{ post.slug }}" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle2" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalCenterTitle2">محتوای پست</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="postcontent" dir="rtl">
+                                                    {{ post.content | safe }}
+
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a class="mr-5" href="{{ post.get_absolute_url }}"> انتقال به صفحه </a>
+                                                <a class="btn btn-danger text-light"
+                                                    href="{% url 'posts:post-delete' id=post.id slug=post.slug %}"> حذف
+                                                </a>
+                                                <a class="btn btn-info text-light"
+                                                    href="{% url 'posts:post-update' id=post.id slug=post.slug %}">
+                                                    ویرایش </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td> <a class="btn btn-sm btn-danger"
+                                    href="{% url 'posts:post-delete' id=post.id slug=post.slug %}">حذف</a></td>
+                            <td><a class="btn btn-sm btn-info"
+                                    href="{% url 'posts:post-update' id=post.id slug=post.slug %}">ویرایش</a>
+                                <!-- <button type="button" class="btn btn-info" data-toggle="modal"
+                                    data-target="#edit{{ post.slug }}">
+                                    ویرایش
+                                </button>
+
+                                 
+                                <div class="modal fade" id="edit{{ post.slug }}" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalScrollableTitle">ویرایش پست
+                                                    {{ post.title }}</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {{ form.media}}
+                                                <form action="{% url 'posts:post-update' id=post.id slug=post.slug %}"
+                                                    method="post" enctype="multipart/form-data">{% csrf_token %}
+                                                    {{ form.as_p }}
+                                                    <input class="btn btn-info" type="submit" value="ویرایش">
+
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-warning">ذخیره تغییرات</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                            </td>
+
+
+                            <td>{{ post.title}}</td>
+                            <td> <a href="{{ post.get_absolute_url }}"><img src="{{ post.image.url }}" alt=""
+                                        style="width:60px;height:60px"></a> </td>
+                            <th scope="row">{{ post.id }}</th>
+                        </tr>
+                    </tbody>
+                    {% empty %}
+                    {% endfor %}
+                </table>
+
+
+
+
+            </div>
+            <div dir="rtl" class="tab-pane fade text-right" id="list-addpost" role="tabpanel"
+                aria-labelledby="list-addpost-list">
+                {{ form.media}}
+                <form action="." method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <p><label for="id_title">عنوان:</label> <input class="form-control" type="text" name="title"
+                            maxlength="120" required="" id="id_title"></p>
+                    <p>
+
+
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" name="image" accept="image/*" id="id_image">
+                            <label class="custom-file-label" for="id_image">یک تصویر انتخاب کنید</label>
+                        </div>
+                    </p>
+
+                    <!-- {{ form.category}} -->
+                    <p><label for="id_category">دسته:</label>
+                        <div class="form-group">
+                            <select class="form-control" name="category" required id="id_category" multiple>
+                                {% for category in categories %}
+                                <option value="{{category.id}}">
+                                    {{ category.title }}
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+                        </div>
+                    </p>
+
+
+                    {{form.content}}
+
+                    <p><label for="id_tags">تگ ها:</label> <input class="form-control" type="text" name="tags"
+                            id="id_tags"></p>
+                    <p><label for="id_published">منتشر شده</label>
+                        {{form.published}}</p>
+                    <p><label for="id_special">ویژه</label>
+                        {{form.special}}</p>
+                    <!-- {{ form.as_p }} -->
+                    <input class="btn btn-info" type="submit" value="ویرایش">
+                    <!-- <button class="btn btn-info" type="submit">ویرایش</button> -->
+
+                </form>
+            </div>
+            <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">...</div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

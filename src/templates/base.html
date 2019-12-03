@@ -48,6 +48,7 @@
 <body>
   <!-- <body style="background: #27282e;color: #fff"> -->
   {% url 'pages:home-page' as home_page %}
+  {% url 'panel-admin' as panel_admin %}
   {% url 'posts:post-list' as post_list %}
   {% url 'posts:post-list' as post_list %}
   <!--==========================
@@ -55,30 +56,39 @@
   ============================-->
   <header id="header">
     <div class="container">
+      <div class="row justify-content-between">
 
-      <div id="logo" class="pull-left">
-        <!-- Uncomment below if you prefer to use a text logo -->
-        <!-- <h1><a href="#main">C<span>o</span>nf</a></h1>-->
-        <a href="{% url 'pages:home-page'%}" class="scrollto"><img src="{% static 'img/logo2.png' %}" alt=""
-            title=""></a>
-      </div>
+        <div id="logo" class="pull-left">
+          <!-- Uncomment below if you prefer to use a text logo -->
+          <!-- <h1><a href="#main">C<span>o</span>nf</a></h1> -->
+          <a href="{% url 'pages:home-page'%}" class="scrollto"><img src="{% static 'img/logo2.png' %}" alt=""
+              title=""></a>
+        </div>
+        <nav id="nav-menu-container" class="rounded-pill" style="background-color:#04091996">
 
-      <nav id="nav-menu-container" class="rounded-pill" style="background-color:#04091996">
-        <ul class="nav-menu">
-          <!-- <li class="menu-active"><a href="#intro">Home</a></li>
+          <ul class="nav-menu">
+            <!-- <li class="menu-active"><a href="#intro">Home</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#speakers">Speakers</a></li>
           <li><a href="#schedule">Schedule</a></li>
           <li><a href="#venue">Venue</a></li>
           <li><a href="#hotels">Hotels</a></li> -->
-          <li class="{% if request.path == post_list %} menu-active {% endif %}"><a href="#gallery">پنل کاربری</a></li>
-          <li class="{% if request.path == post_list %} menu-active {% endif %}"><a
-              href="{% url 'posts:post-list' %}">پست ها</a></li>
-          <li class="{% if request.path == home_page %} menu-active {% endif %}"><a
-              href="{% url 'pages:home-page' %}">خانه</a></li>
-          <li class="buy-tickets"><a href="{% url 'bookmarks:bookmarked-list' %}"><b>علاقه مندی ها</b></a></li>
-        </ul>
-      </nav><!-- #nav-menu-container -->
+            {% if request.user.is_superuser or requset.user.is_staff %}
+            <li class="{% if request.path == panel_admin %} menu-active {% endif %}"><a
+                href="{% url 'panel-admin' %}">پنل
+                ادمین <span class="badge badge-danger">{{ comment_counter }}</span></a>
+            </li>
+            {% endif %}
+            <li class="{% if request.path == post_list %} menu-active {% endif %}"><a href="#gallery">پنل کاربری</a>
+            </li>
+            <li class="{% if request.path == post_list %} menu-active {% endif %}"><a
+                href="{% url 'posts:post-list' %}">پست ها</a></li>
+            <li class="{% if request.path == home_page %} menu-active {% endif %}"><a
+                href="{% url 'pages:home-page' %}">خانه</a></li>
+            <li class="buy-tickets"><a href="{% url 'bookmarks:bookmarked-list' %}"><b>علاقه مندی ها</b></a></li>
+          </ul>
+        </nav><!-- #nav-menu-container -->
+      </div>
     </div>
   </header><!-- #header -->
 
