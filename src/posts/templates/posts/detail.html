@@ -3,7 +3,7 @@
 {% load static %}
 {% load like_tags %}
 {% load bookmark_tags %}
-<img src="{% static 'media/detail.jpg' %}" alt="" style="width: 100%;height: 750px">
+<img src="{% static 'media/detail.jpg' %}" alt="" style="width: 100%;height: 750px;z-index: 98;">
 {% endblock %}
 {% block detail %}
 <style>
@@ -14,10 +14,44 @@
 
 <div class="row" style="width: 100%">
     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 offset-md-1">
+        {% if post.nextpost %}
+        <div class="cardtitleprev"
+            style="height: 80px;width: 151px; position: fixed;left:0px;right: 0px;bottom: 0px;top: 500px;z-index: 3;">
+            <a href="{{ post.nextpost.get_absolute_url }}">
+                <div class='card'>
+                    <h6 class="text-right bg-default" style="position: absolute;bottom:50px;padding-right: 30px">
+                        بعدی
+                    </h6>
+                    <p class="text-right bg-default" style="position: absolute;bottom:0;padding-right: 8px">
+                        {{ post.nextpost.title }}
+                    </p>
+                    <img class="img-fluid" src="{{ post.nextpost.image.url }}" alt=""
+                        style="width: 80px; height: 80px; z-index: 1;">
+                </div>
+            </a>
+        </div>
+        {% endif %}
         {% include "posts/sidebar.html" %}
     </div>
     <!-- End left sidebar -->
     <main class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+        {% if post.previous %}
+        <div dir="rtl" class="cardtitleprev"
+            style="height: 80px;width: 151px; position: fixed;left:0px;right: 0px;bottom: 0px;top: 500px;z-index: 3;margin-left:1375px">
+            <a href="{{ post.previous.get_absolute_url }}">
+                <div class='card'>
+                    <img class="img-fluid" src="{{ post.previous.image.url }}" alt=""
+                        style="width: 80px; height: 80px; z-index: 2;">
+                    <h6 class="text-left bg-default" style="position: absolute;bottom:50px;padding-left: 30px">
+                        قبلی
+                    </h6>
+                    <p class="text-left bg-default" style="position: absolute;bottom:0;padding-left: 8px">
+                        {{ post.previous.title }}
+                    </p>
+                </div>
+            </a>
+        </div>
+        {% endif %}
         <br>
         <div class="container">
             <div class="row">
@@ -36,6 +70,11 @@
                                     {% endif %}
                                     {{ x.title }}
                                     {% endif %}
+                                    {% endfor %}
+                                </b></p>
+                            <p class="text-center text-muted ml-md-2"><b>
+                                    {% for tag in post.tags %}
+                                    #{{ tag }}
                                     {% endfor %}
                                 </b></p>
                         </div>
@@ -285,20 +324,20 @@
                                 fa-bookmark"></i>
 
                             </a>
-                            <a id="like-btn" href="{% url 'likes:add-to-like' id=post.id model_type='post' %}"
-                                data-href="{{ post.get_absolute_api_url }}" data-likes="{{ post.post_like.count }}"
-                                class="text-danger mt-md-5" style="font-size: 24px"><i class="
-                                {% like_btn_color id=post.id model_type='post' as likecolor %}
-                                {% if likecolor %}
-                                fas
-                                {% else %}
-                                far
-                                {% endif %}
-                            fa-heart"></i>
-                                <span style="font-size: 20px">
-                                    {{ post.post_like.count }}
+                            <a href="{% url 'likes:add-to-like' post.id 'post' %}" class="text-danger mt-md-5"
+                                style="font-size: 24px;cursor:pointer"><i id="likedislikebtn" data-type='post'
+                                    data-id="{{ post.id }}" data-likes="{{ post.post_like.count }}" class="
+                                    {% like_btn_color id=post.id model_type='post' as likecolor %}
+                                    {% if likecolor %}
+                                    fas
+                                    {% else %}
+                                    far
+                                    {% endif %}
+                            fa-heart"> {% like_counter id=post.id model_type='post' %}</i>
+                                <!-- <span style="font-size: 20px">
+                                    
 
-                                </span>
+                                </span> -->
                             </a>
 
                             <!-- <a id="like-btn" href=""
@@ -438,7 +477,9 @@
                                                     fa-thumbs-up"></i>
 
 
-                                            <span class="badge badge-light">{{comment.comment_like.count}}</span>
+                                            <!-- <span class="badge badge-light">{{comment.comment_like.count}}</span> -->
+                                            <span
+                                                class="badge badge-light">{% like_counter id=comment.id model_type='comments' %}</span>
 
                                         </a>
 
@@ -461,7 +502,9 @@
                                                     fa-thumbs-down"></i>
 
 
-                                            <span class="badge badge-light">{{comment.comment_dislike.count}}</span>
+                                            <!-- <span class="badge badge-light">{{comment.comment_dislike.count}}</span> -->
+                                            <span
+                                                class="badge badge-light">{% dislike_counter id=comment.id model_type='comments' %}</span>
                                         </a>
 
 
@@ -515,8 +558,9 @@
                                                                 far
                                                                 {% endif %}
                                                                 fa-thumbs-up"></i>
+                                                                <!-- <span class="badge badge-light">{{child.comment_like.count}}</span> -->
                                                                 <span
-                                                                    class="badge badge-light">{{child.comment_like.count}}</span>
+                                                                    class="badge badge-light">{% like_counter id=child.id model_type='comments' %}</span>
 
                                                             </a>
 
@@ -556,8 +600,9 @@
                                                                 {% endif %}
                                                                 fa-thumbs-down"></i>
 
+                                                                <!-- <span class="badge badge-light">{{child.comment_dislike.count}}</span> -->
                                                                 <span
-                                                                    class="badge badge-light">{{child.comment_dislike.count}}</span>
+                                                                    class="badge badge-light">{% dislike_counter id=child.id model_type='comments' %}</span>
                                                             </a>
 
                                                             <small class="text-muted "
@@ -637,8 +682,9 @@
                                                                     far
                                                                     {% endif %}
                                                                     fa-thumbs-up"></i>
+                                                                    <!-- <span class="badge badge-light">{{grandchild.comment_like.count}}</span> -->
                                                                     <span
-                                                                        class="badge badge-light">{{grandchild.comment_like.count}}</span>
+                                                                        class="badge badge-light">{% like_counter id=grandchild.id model_type='comments' %}</span>
 
                                                                 </a>
 
@@ -656,8 +702,9 @@
                                                                     far
                                                                     {% endif %}
                                                                     fa-thumbs-down"></i>
+                                                                    <!-- <span class="badge badge-light">{{grandchild.comment_dislike.count}}</span> -->
                                                                     <span
-                                                                        class="badge badge-light">{{grandchild.comment_dislike.count}}</span>
+                                                                        class="badge badge-light">{% dislike_counter id=grandchild.id model_type='comments' %}</span>
                                                                 </a>
 
                                                                 <small class="text-muted "
@@ -766,7 +813,7 @@
                                     <div class="row justify-content-around mt-3">
                                         <small class=" card-text text-light mt-2">
                                             <small><small>
-                                                    {% for x in item.category.all %}
+                                                    {% for x in item.tags.all %}
                                                     {% if item.category.all.count <= 1 %}
                                                     {{ x.title }}
                                                     {% elif item.category.all.count > 1 %}
@@ -799,6 +846,7 @@
             <div class="carousel-item">
                 <div class="row justify-content-start">
                     {% endif %}
+                    {% empty %}
                     {% endfor %}
                 </div>
 
@@ -820,6 +868,52 @@
 </section>
 
 <br><br>
+<script type="text/javascript">
+    // $(document).ready(function () {
+    //     $('#likedislikebtn').click(function (e) {
+    //         e.preventDefault()
+    //         // $.post(
+    //         //     "{% url 'likes-api:like-create-api' %}",
+    //         //     // 'http://127.0.0.1:8000/api/likes/like/add/?model_type=post&id={{post.id}}',
+    //         //     {
+    //         //         'likedislike': 'like',
+    //         //         'content_type': '{{model_type}}',
+    //         //         'object_id': "{{ post.id }}",
+    //         //         'csrfmiddlewaretoken': '{{csrf_token}}',
+    //         //     },
+    //         //     function (data, status) {
+    //         //         console.log(data, status)
+    //         //     }
+    //         // )
+
+    //         // var counter = ("{{ post.post_like.count }}")
+    //         // var addCounter = counter + 1
+    //         // var minCounter = counter - 1
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "{% url 'likes:add-to-like' id=post.id model_type='post' %}",
+    //             // url: "http://127.0.0.1:8000/api/likes/like/add/?content_type=post&object_id={{post.id}}",
+    //             // url: "{% url 'likes:add-to-like' id=post.id model_type='post' %}",
+    //             // dataType: "json",
+    //             data: {
+    //                 'likedislike': 'like',
+    //                 'csrfmiddlewaretoken': '{{csrf_token}}',
+    //             },
+    //             success: function (data) {
+
+    //                 console.log("SUCCESS")
+
+    //             },
+    //             error: function (error) {
+    //                 alert(data.type)
+    //                 console.log(error)
+    //                 console.log("error")
+    //             }
+    //         });
+    //     });
+    // });
+
+</script>
 {% endblock %}
 
 <script>
