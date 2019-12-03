@@ -1,11 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.contenttypes.models import ContentType
+from django.forms.models import model_to_dict
 
 # Create your views here.
 from .models import LikeDislike
 from comments.models import Comments
 from posts.models import Post
+
+import json
 
 
 def add_to_like(request, id, model_type):
@@ -15,7 +18,12 @@ def add_to_like(request, id, model_type):
     content_type = ContentType.objects.get(model=model_type)
     ModelType = content_type.model_class()
     model_type_qs = get_object_or_404(ModelType, id=id)
-    # print("model type maaaaaaaaaaaaaaaaaaaan: ", content_type)
+    # if request.is_ajax():
+    #     qs = LikeDislike.objects.create_for_instance_model(
+    #         instance=model_type_qs, request=request, likedislike='like')
+    #     dicted_model = model_to_dict(qs)
+    #     return HttpResponse(json.dumps(dicted_model))
+    # else:
     LikeDislike.objects.create_for_instance_model(
         instance=model_type_qs, request=request, likedislike='like')
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -28,8 +36,14 @@ def add_to_dislike(request, id, model_type):
     content_type = ContentType.objects.get(model=model_type)
     ModelType = content_type.model_class()
     model_type_qs = get_object_or_404(ModelType, id=id)
+    # if request.is_ajax() and request.POST:
+    #     likedislike_qs = LikeDislike.objects.create_for_instance_model(
+    #         instance=model_type_qs, request=request, likedislike='dislike')
+    #     return HttpResponse(json.dumps(likedislike_qs), conetnt_type='application/json')
+    # else:
     LikeDislike.objects.create_for_instance_model(
         instance=model_type_qs, request=request, likedislike='dislike')
+
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 

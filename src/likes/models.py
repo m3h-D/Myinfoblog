@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.template.defaultfilters import truncatewords_html, truncatewords, truncatechars_html
 from django.utils.html import strip_tags
 
-from .utils import get_client_ip, likedislike_manager
+from .utils import get_client_ip, likedislike_manager, get_or_create_auth_anon
 # Create your models here.
 
 
@@ -23,84 +23,75 @@ class LikeDislikeManager(models.Manager):
             content_type=content_type, object_id=obj_id)
         return queryset
 
-    # liked, disliked
+    # @get_or_create_auth_anon('LikeDislike')
     def create_for_instance_model(self, instance, request, likedislike):
-        """
-        bar assasse model create mkonim
-        age user anonymous bud bar assasse IP_address taghirat emal mishe
-        age authenticate bud ke nega mikone bebine ip sh hast ya na age bud
-        faqat user behesh mide...
-        """
 
-        user = request.user
-        ip_address = get_client_ip(request)
-        content_type = ContentType.objects.get_for_model(instance.__class__)
-        obj_id = instance.id
-        content = instance.content
-
-        # liked_or_not = self.filter_by_model(instance=instance).filter(
-        #     ip_address=ip_address, likedislike='like').first()
-        # disliked_or_not = self.filter_by_model(instance=instance).filter(
-        #     ip_address=ip_address, likedislike='dislike').first()
-        if request.user.is_authenticated:
-            # queryset = super(LikeDislikeManager, self).get_or_create()
-            try:
-                queryset = self.get(
-                    user=user,
-                    ip_address=ip_address,
-                    content_type=content_type,
-                    object_id=obj_id,
-                    content=content,
-                )
-                likedislike_manager(queryset, likedislike)
-
-            except:
-                queryset = self.create(
-                    user=user,
-                    ip_address=ip_address,
-                    content_type=content_type,
-                    object_id=obj_id,
-                    content=content,
-                    # liked=liked,
-                    # disliked=disliked,
-                    likedislike=likedislike,
-                )
-        elif request.user.is_anonymous:
-
-            try:
-                queryset = self.get(
-                    ip_address=ip_address,
-                    content_type=content_type,
-                    object_id=obj_id,
-                    content=content,
-                )
-                likedislike_manager(queryset, likedislike)
-                # if queryset.likedislike == 'like' and likedislike == 'like':
-                #     queryset.delete()
-                # elif queryset.likedislike == 'dislike' and likedislike == 'dislike':
-                #     queryset.delete()
-                # elif queryset.likedislike == 'like' and likedislike == 'dislike':
-                #     queryset.likedislike = 'dislike'
-                #     queryset.save()
-                # elif queryset.likedislike == 'dislike' and likedislike == 'like':
-                #     queryset.likedislike = 'like'
-                #     queryset.save()
-            except:
-                queryset = self.create(
-                    ip_address=ip_address,
-                    content_type=content_type,
-                    object_id=obj_id,
-                    content=content,
-                    # liked=liked,
-                    # disliked=disliked,
-                    likedislike=likedislike,
-                )
-
-        # if liked_or_not:
-        #     liked_or_not.delete()
-        # if disliked_or_not:
-        #     disliked_or_not.delete()
+        queryset = get_or_create_auth_anon(
+            self, instance, request, likedislike=likedislike)
+        if type(queryset) is not tuple:
+            likedislike_manager(queryset, likedislike, request)
         return queryset
+
+    # def create_for_instance_model(self, instance, request, likedislike):
+    #     """
+    #     bar assasse model create mkonim
+    #     age user anonymous bud bar assasse IP_address taghirat emal mishe
+    #     age authenticate bud ke nega mikone bebine ip sh hast ya na age bud
+    #     faqat user behesh mide...
+    #     """
+    #     ip_address = get_client_ip(request)
+    #     content_type = ContentType.objects.get_for_model(instance.__class__)
+
+    #     # liked_or_not = self.filter_by_model(instance=instance).filter(
+    #     #     ip_address=ip_address, likedislike='like').first()
+    #     # disliked_or_not = self.filter_by_model(instance=instance).filter(
+    #     #     ip_address=ip_address, likedislike='dislike').first()
+    #     if request.user.is_authenticated:
+    #         # queryset = super(LikeDislikeManager, self).get_or_create()
+    #         try:
+    #             queryset = self.get(
+    #                 # user=user,
+    #                 ip_address=ip_address,
+    #                 content_type=content_type,
+    #                 object_id=instance.id,
+    #                 # likedislike=likedislike
+    #             )
+    #             likedislike_manager(queryset, likedislike, request)
+
+    #         except:
+    #             queryset = self.create(
+    #                 user=request.user,
+    #                 ip_address=ip_address,
+    #                 content_type=content_type,
+    #                 object_id=instance.id,
+    #                 content=instance.content,
+    #                 likedislike=likedislike,
+    #             )
+    #     elif request.user.is_anonymous:
+
+    #         try:
+    #             queryset = self.get(
+    #                 ip_address=ip_address,
+    #                 content_type=content_type,
+    #                 object_id=instance.id,
+    #                 # likedislike=likedislike
+    #             )
+    #             likedislike_manager(queryset, likedislike, request)
+
+    #         except:
+    #             queryset = self.create(
+    #                 ip_address=ip_address,
+    #                 content_type=content_type,
+    #                 object_id=instance.id,
+    #                 content=instance.content,
+    #                 likedislike=likedislike,
+    #             )
+
+    #     # if liked_or_not:
+    #     #     liked_or_not.delete()
+    #     # if disliked_or_not:
+    #     #     disliked_or_not.delete()
+    #     return queryset
 
 
 class LikeDislike(models.Model):
