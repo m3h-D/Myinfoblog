@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+{% load like_tags %}
 
 <head>
     <meta charset="utf-8">
@@ -49,9 +50,13 @@
     <div class="page-head-blog pr-3 pl-0">
         <div class="single-blog-page">
             <!-- search option start -->
-            <form action="#">
+            <!-- <form action="." method="get">
+                {{	form.as_p	}}
+                <input type="submit" value="Search">
+            </form> -->
+            <form action="{% url 'posts:post-search' %}" method="GET">
                 <div class="search-option">
-                    <input type="text" placeholder="Search...">
+                    <input type="search" name="results" value="{{ request.GET.results }}" id="" placeholder="جستجو">
                     <button class="button" type="submit">
                         <i class="fa fa-search"></i>
                     </button>
@@ -80,7 +85,7 @@
                         <p class="text-right">{{ lasts.content|safe|truncatechars_html:10 }}</p>
                         <div class="row justify-content-around">
                             <span>{{ lasts.post_viewed.count }} <i class="far fa-eye"></i></span>
-                            <span>{{ lasts.post_like.count }} <i class="fas fa-heart"></i></span>
+                            <span>{% like_counter id=lasts.id model_type='post' %} <i class="fas fa-heart"></i></span>
                         </div>
 
                     </div>
