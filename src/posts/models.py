@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db.models import Count
@@ -47,6 +48,10 @@ class Post(models.Model):
     category = models.ManyToManyField(
         Category, related_name='post', verbose_name='دسته')
     content = HTMLField()
+    tags = ArrayField(models.CharField(
+        max_length=90), size=5, blank=True, null=True, verbose_name='تگ ها')
+    previous = models.OneToOneField(
+        'self', on_delete=models.SET_NULL, null=True, blank=True, related_name="nextpost", verbose_name='پست قبلی')
     read_time = models.TimeField(
         null=True, blank=True, verbose_name='زمان لازم برای خواندن پست')
     commetns = GenericRelation(Comments, related_name='post')
@@ -68,13 +73,6 @@ class Post(models.Model):
         """return kardane name nevisande va post"""
         return "پست {} توسط {}".format(self.title, self.author)
 
-    # @property
-    # def latest_posts(self):
-    #     """3 ta post akhar"""
-    #     posts = Post.objects.filter(
-    #         published=True).order_by('-created')[:3]
-    #     return posts
-
     @property
     def comments(self):
         """
@@ -83,18 +81,9 @@ class Post(models.Model):
         tu inja manzoor az self hamoon object haye Post e.
         age decorator e property o nazarim to view bayad joloye comments() bezarim
         """
-        comments = Comments.objects.filter_by_model(instance=self)
+        comments = Comments.objects.filter_by_model(
+            instance=self).filter(approved=True)
         return comments
-
-    # @property
-    # def get_content_type(self):
-    #     """
-    #     baraye sakhtane form to Post bayad ContentType o begirim ta befahmim
-    #     commenti ke dare neveshte mishe vase kodom post bere
-    #     """
-
-    #     content_type = ContentType.objects.get_for_model(self.__class__)
-    #     return content_type
 
     def get_absolute_url(self):
         """reverse kardane be detail e post"""
@@ -103,19 +92,6 @@ class Post(models.Model):
     def get_absolute_api_url(self):
         """reverse kardane be detail e post"""
         return reverse('posts-api:post-detail-api', args=[self.pk])
-
-    # def get_like_url(self):
-    #     """function e like mesele get absloute url ke dg niaz nist to html id taarif konim"""
-    #     return reverse('posts:post-like', args=[self.id, self.slug])
-
-    @property
-    def post_like(self):
-        """neshun dadane post haye like shude"""
-        # likes = LikeDislike.objects.filter_by_model(
-        #     instance=self).filter(liked=True)
-        likes = LikeDislike.objects.filter_by_model(
-            instance=self).filter(likedislike='like')
-        return likes
 
     def recommended_posts(self, request, same_post=None):
         """
@@ -137,19 +113,6 @@ class Post(models.Model):
             instance=self).values_list('ip_address', flat=True).distinct()
         return viewed_item
 
-    def add_to_bookmarked_post(self, user):
-        """Add/Remove kardane bookmark e user baraye Post"""
-        book_marked = BookMark.objects.create_by_instance_model(
-            user=user, instance=self)
-        return book_marked
-
-    @property
-    def bookmarked_post(self):
-        """check kardane inke post BookMark shude ya na"""
-        book_marked = BookMark.objects.filter_by_model(
-            instance=self)
-        return book_marked
-
     @property
     def post_rate(self, avg=0):
         """emtiaz dehi be post bar assasse rate entekhab shude (az 1 ta 5) taghsim bar tedad e user haey ke be in post emtiaz dadan"""
@@ -169,3 +132,52 @@ class Post(models.Model):
     #     get_like = LikeDislike.objects.create_for_instance_model(
     #         instance=self, request=request, likedislike='like')
     #     return get_like
+
+    # @property
+    # def get_content_type(self):
+    #     """
+    #     baraye sakhtane form to Post bayad ContentType o begirim ta befahmim
+    #     commenti ke dare neveshte mishe vase kodom post bere
+    #     """
+
+    #     content_type = ContentType.objects.get_for_model(self.__class__)
+    #     return content_type
+
+    # @property
+    # def bookmarked_post(self):
+    #     """check kardane inke post BookMark shude ya na"""
+    #     book_marked = BookMark.objects.filter_by_model(
+    #         instance=self)
+    #     return book_marked
+
+    # def add_to_bookmarked_post(self, user):
+    #     """Add/Remove kardane bookmark e user baraye Post"""
+    #     book_marked = BookMark.objects.create_by_instance_model(
+    #         user=user, instance=self)
+    #     return book_marked
+
+    # def get_like_url(self):
+    #     """function e like mesele get absloute url ke dg niaz nist to html id taarif konim"""
+    #     return reverse('posts:post-like', args=[self.id, self.slug])
+
+    # @property
+    # def post_like(self):
+    #     """neshun dadane post haye like shude"""
+    #     # likes = LikeDislike.objects.filter_by_model(
+    #     #     instance=self).filter(liked=True)
+    #     likes = LikeDislike.objects.filter_by_model(
+    #         instance=self).filter(likedislike='like')
+    #     return likes
+
+    # @property
+    # def latest_posts(self):
+    #     """3 ta post akhar"""
+    #     posts = Post.objects.filter(
+    #         published=True).order_by('-created')[:3]
+    #     return posts
+
+    # def save(self, *args, **kwargs):
+    #     if not self.previous:
+    #         self.previous = Post.objects.filter(
+    #             id__lt=self.id).order_by('-id').first()
+    #     super().save(*args, **kwargs)

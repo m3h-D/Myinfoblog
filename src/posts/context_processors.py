@@ -1,4 +1,5 @@
 from .models import Post, Category
+from comments.models import Comments
 from django.db.models import Count
 
 
@@ -11,3 +12,8 @@ def post_sidebar(request):
         'late_post_sidebar': late_post,
     }
     return context
+
+
+def comments_counter(request):
+    comment_counter = Comments.objects.filter(approved=False).count()
+    return {'comment_counter': comment_counter}
