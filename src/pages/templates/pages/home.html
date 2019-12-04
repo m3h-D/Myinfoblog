@@ -72,17 +72,8 @@
                             </div>
                             <ol class="carousel-indicators">
                                 {% for post in special_posts %}
-                                <li data-target="#carouselExampleIndicators" data-slide-to="
-                                {% if forloop.counter == 0 %}
-                                0
-                                {% endif %}
-                                {% if forloop.counter == 1 %}
-                                1
-                                {% endif %}
-                                {% if forloop.counter == 3 %}
-                                3
-                                {% endif %}
-                                " class="{% if forloop.first %}active{% endif %} bg-danger"></li>
+                                <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"
+                                    class="{% if forloop.first %}active{% endif %} bg-danger"></li>
                                 {% endfor %}
                                 <!-- <li data-target="#carouselExampleIndicators" data-slide-to="1" class="bg-danger"></li>
                                 <li data-target="#carouselExampleIndicators" data-slide-to="2" class="bg-danger"></li> -->
@@ -277,8 +268,14 @@
             <h3>نویسندگان سایت</h3>
         </header>
 
-        <div id="carouselExampleIndicators3" class="carousel slide" data-ride="carousel">
-
+        <div id="carouselExampleIndicators3" class="carousel slide" data-ride="carousel" style="height: 167px">
+            <ol class="carousel-indicators">
+                {% for users in authors %}
+                <li data-target="#carouselExampleIndicators3" data-slide-to="{{ forloop.counter0 }}"
+                    class="{% if forloop.first %}active{% endif %} bg-danger"
+                    style="border-radius: 100%; height: 12px;width: 12px;"></li>
+                {% endfor %}
+            </ol>
             <div class="carousel-inner">
                 {% for users in authors %}
                 <div class="carousel-item {% if forloop.first %} active {% endif %}">
@@ -289,7 +286,7 @@
                         </div>
                         <div class="col-md-7 text-right">
                             <h3>{{ users.first_name }}</h3>
-                            <h4>{% if users.is_superuser %}ادمین و {% endif %}نویسنده</h4>
+                            <h4>{% if users.is_staff %}ادمین و {% endif %}نویسنده</h4>
                             <p class="mr-3">
                                 {{ users.profile.bio }}
                             </p>
@@ -299,7 +296,7 @@
                 {% endfor %}
 
             </div>
-            <ol class="carousel-indicators">
+            <!-- <ol class="carousel-indicators">
                 {% for users in authors %}
                 <li data-target="#carouselExampleIndicators3" style="border-radius: 100%; height: 12px;width: 12px;"
                     data-slide-to="
@@ -314,7 +311,8 @@
                 {% endif %}
                 " class="{% if forloop.first %}active{% endif %} bg-danger"></li>
                 {% endfor %}
-            </ol>
+            </ol> -->
+
 
         </div>
 
