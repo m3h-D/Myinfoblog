@@ -61,6 +61,10 @@ coverage.xml
 # Django stuff:
 *.log
 # local_settings.py
+prod.py
+advance_blog/settings/prod.py
+debug.log
+advance_blog/debug.log
 db.sqlite3
 # advance_blog/
 base_settings.py

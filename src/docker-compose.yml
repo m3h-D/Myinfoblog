@@ -15,6 +15,9 @@ services:
     # command: gunicorn app:app -b :8000 --name app --log-level=debug --log-file=-
     # command: gunicorn advance_blog.wsgi:application --bind 0.0.0.0:8000
     # env_file: .env
+    
+    # environment:
+    #   - DJANGO_SETTINGS_MODULE=advance_blog.settings.prod
     ports:
       - "8000:8000"
     depends_on:

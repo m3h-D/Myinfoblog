@@ -34,13 +34,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 
 SECRET_KEY = os.environ.get("DB_ADVANCE_BLOG_SECRET")
+# SECRET_KEY = '389f582c1e84a8$cc49da303cf179e58939ab7#$ac4ba9eec8a87589cb03'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.environ.get("DEBUG")
+ALLOWED_HOSTS = ['*']
+
 DEBUG = True
-
-
-ALLOWED_HOSTS = ['advance-django-blog.herokuapp.com', '*']
 
 
 # Application definition
@@ -148,6 +148,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# AUTH_USER_MODEL = 'accounts.models.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -169,16 +170,18 @@ LOGIN_URL = '/accounts/login/'
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 # AUTH_USER_MODEL = 'accounts.User'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
     # '/advance_blog/src/static/',
 
-    os.path.join(BASE_DIR, 'static', 'media'),
-)
+    os.path.join(BASE_DIR, 'static', 'media')
+]
+# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media/')
 
 
 TINYMCE_DEFAULT_CONFIG = {
