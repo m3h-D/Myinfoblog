@@ -37,55 +37,25 @@ class UserTrackerManager(models.Manager):
         queryset = instance.__class__.objects.filter(
             category__id__in=same_category)
         # .annotate(count=models.Count('likes__likedislike')).order_by('-count')[:3]
+        # self.same_cate += list(queryset.values_list('pk', flat=True))
         try:
             """ye session e listi misaze ke Model o bar assasse category e bala filter mikone"""
             request.session['same_categories'] += list(queryset.values_list(
                 'pk', flat=True))  # bareye in az values_list o pk estefade kardim ke dg niaz be serialize kardan nabshe
 
         except:
-            request.session['same_categories'] = list()
-            request.session['same_categories'] += list(
+            # request.session['same_categories'] = list()
+            request.session['same_categories'] = list(
                 queryset.values_list('pk', flat=True))
+
+        # same_item = instance.__class__.objects.filter(
+        #     pk__in=self.same_cate)
 
         # sessioni ke bala sakhte shu o mirize to ye moteghayer o bar migardoone
         same_item = instance.__class__.objects.filter(
             pk__in=request.session.get('same_categories'))
-        # print(same_item)
 
         return same_item
-
-    # def recommended_list(self, request, instance):
-    #     """ye recommended list bar assasse category va session"""
-    #     if request.user.is_authenticated:
-    #         viewed_item = UserTracker.objects.filter_by_model(
-    #             instance=instance).filter(user=request.user)
-    #     elif request.user.is_anonymous:
-    #         ip_address = get_client_ip(request)
-    #         viewed_item = UserTracker.objects.filter_by_model(
-    #             instance=instance).filter(user__isnull=True, ip_address=ip_address)
-
-    #     for item in viewed_item:
-    #         # category e post haei ke user dide
-    #         same_category = item.content_object.category.all()
-
-    #         for category in same_category:
-    #             # az har category 3 ta post o faghat neshun bede
-    #             queryset = instance.__class__.objects.filter(
-    #                 category=category).annotate(count=models.Count('likes__likedislike')).order_by('-count')[:3]
-    #             try:
-    #                 """ye session e listi misaze ke Model o bar assasse category e bala filter mikone"""
-    #                 request.session['same_categories'] += list(queryset.values_list(
-    #                     'pk', flat=True))  # bareye in az values_list o pk estefade kardim ke dg niaz be serialize kardan nabshe
-
-    #             except:
-    #                 request.session['same_categories'] = list()
-    #                 request.session['same_categories'] += list(
-    #                     queryset.values_list('pk', flat=True))
-
-    #     same_item = instance.__class__.objects.filter(
-    #         pk__in=request.session.get('same_categories', []))  # sessioni ke bala sakhte shu o mirize to ye moteghayer o bar migardoone
-
-    #     return same_item
 
 
 class UserTracker(models.Model):
@@ -114,3 +84,5 @@ class UserTracker(models.Model):
             return ("{} در تاریخ {} - {} را دیده").format(self.user.username, self.viewed_on, self.content_object.title)
         except:
             return ("{} در تاریخ {} - {} را دیده").format(self.ip_address, self.viewed_on, self.content_object.title)
+        finally:
+            return ("{} در تاریخ {} -  را دیده").format(self.ip_address, self.viewed_on)
