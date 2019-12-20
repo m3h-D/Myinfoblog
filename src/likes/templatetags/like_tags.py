@@ -1,4 +1,5 @@
 from django import template
+from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from ..models import LikeDislike
 from ..utils import get_client_ip
@@ -13,7 +14,8 @@ def like_btn_color(context, id, model_type):
     ip_address = get_client_ip(request)
     content_type = ContentType.objects.get(model=model_type)
     Model = content_type.model_class()
-    model_qs = Model.objects.get(id=id)
+    # model_qs = Model.objects.get(id=id)
+    model_qs = get_object_or_404(Model, id=id)
     likedislike = LikeDislike.objects.filter_by_model(
         model_qs).filter(likedislike='like').first()
     try:
@@ -33,7 +35,8 @@ def dislike_btn_color(context, id, model_type):
     ip_address = get_client_ip(request)
     content_type = ContentType.objects.get(model=model_type)
     Model = content_type.model_class()
-    model_qs = Model.objects.get(id=id)
+    # model_qs = Model.objects.get(id=id)
+    model_qs = get_object_or_404(Model, id=id)
     likedislike = LikeDislike.objects.filter_by_model(
         model_qs).filter(likedislike='dislike').first()
     try:
