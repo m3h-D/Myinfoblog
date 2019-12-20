@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load like_tags %}
 
 {% block home %}
 <div class="bd-example">
@@ -75,8 +76,6 @@
                                 <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}"
                                     class="{% if forloop.first %}active{% endif %} bg-danger"></li>
                                 {% endfor %}
-                                <!-- <li data-target="#carouselExampleIndicators" data-slide-to="1" class="bg-danger"></li>
-                                <li data-target="#carouselExampleIndicators" data-slide-to="2" class="bg-danger"></li> -->
                             </ol>
                         </div>
                         <!-- ------------- -->
@@ -119,7 +118,8 @@
                                     <small class=" card-text text-light" style="height: 0%">
                                         {{ post.comments.count }} <i class="far fa-comments"></i></small>
                                     <small class=" card-text text-light mr-5" style="height: 0%">
-                                        {{ post.post_like.count }} <i class="fas fa-heart"></i></small>
+                                        {% like_counter id=post.id model_type='post' %} <i
+                                            class="fas fa-heart"></i></small>
                                     <small class=" card-text text-light  mr-5" style="height: 0%">
                                         {{ post.post_viewed.count }} <i class="far fa-eye"></i></small>
                                 </div>

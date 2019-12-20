@@ -72,11 +72,7 @@
                                     {% endif %}
                                     {% endfor %}
                                 </b></p>
-                            <p class="text-center text-muted ml-md-2"><b>
-                                    {% for tag in post.tags %}
-                                    #{{ tag }}
-                                    {% endfor %}
-                                </b></p>
+
                         </div>
 
                         <br>
@@ -395,6 +391,11 @@
                             {{ post.content | safe }}
 
                         </div>
+                        <p class="text-right text-muted"><b>
+                                {% for tag in post.tags %}
+                                {{ tag }} #
+                                {% endfor %}
+                            </b></p>
                         <br><br><br>
                         <hr>
 
@@ -437,7 +438,7 @@
                                                 پاسخ ها {{ comment.children.count }}
                                             </button>
                                         </a>
-                                        {% if user.id == comment.user.id %}
+                                        {% if user.id == comment.user.id or request.user.is_admin or request.user.is_staff %}
                                         <a href="{% url 'comments:delete-comment' comment.id %}" style="font-size: 19px"
                                             class="text-dark mr-5 mt-2"><i class="fas fa-eraser"></i></a>
                                         {% endif %}
@@ -537,7 +538,7 @@
 
                                                         <div class="text-right">
                                                             <hr>
-                                                            {% if user.id == child.user.id %}
+                                                            {% if user.id == child.user.id or request.user.is_admin or request.user.is_staff %}
                                                             <a href="{% url 'comments:delete-comment' child.id %}"
                                                                 style="font-size: 19px" class="text-dark mr-3"><i
                                                                     class="fas fa-eraser"></i></a>
@@ -662,7 +663,7 @@
 
                                                             <div class="text-right">
                                                                 <hr>
-                                                                {% if user.id == grandchild.user.id %}
+                                                                {% if user.id == grandchild.user.id or request.user.is_admin or request.user.is_staff %}
                                                                 <a href="{% url 'comments:delete-comment' grandchild.id %}"
                                                                     style="font-size: 19px" class="text-dark mr-3"><i
                                                                         class="fas fa-eraser"></i></a>
@@ -868,50 +869,62 @@
 </section>
 
 <br><br>
+
 <script type="text/javascript">
-    // $(document).ready(function () {
-    //     $('#likedislikebtn').click(function (e) {
-    //         e.preventDefault()
-    //         // $.post(
-    //         //     "{% url 'likes-api:like-create-api' %}",
-    //         //     // 'http://127.0.0.1:8000/api/likes/like/add/?model_type=post&id={{post.id}}',
-    //         //     {
-    //         //         'likedislike': 'like',
-    //         //         'content_type': '{{model_type}}',
-    //         //         'object_id': "{{ post.id }}",
-    //         //         'csrfmiddlewaretoken': '{{csrf_token}}',
-    //         //     },
-    //         //     function (data, status) {
-    //         //         console.log(data, status)
-    //         //     }
-    //         // )
+    $(document).ready(function () {
+        $('#likedislikebtn').click(function (e) {
+            e.preventDefault()
+            let likeColor = document.getElementById('likedislikebtn')
 
-    //         // var counter = ("{{ post.post_like.count }}")
-    //         // var addCounter = counter + 1
-    //         // var minCounter = counter - 1
-    //         $.ajax({
-    //             type: "POST",
-    //             url: "{% url 'likes:add-to-like' id=post.id model_type='post' %}",
-    //             // url: "http://127.0.0.1:8000/api/likes/like/add/?content_type=post&object_id={{post.id}}",
-    //             // url: "{% url 'likes:add-to-like' id=post.id model_type='post' %}",
-    //             // dataType: "json",
-    //             data: {
-    //                 'likedislike': 'like',
-    //                 'csrfmiddlewaretoken': '{{csrf_token}}',
-    //             },
-    //             success: function (data) {
+            // $.post(
+            //     "{% url 'likes-api:like-create-api' %}",
+            //     // 'http://127.0.0.1:8000/api/likes/like/add/?model_type=post&id={{post.id}}',
+            //     {
+            //         'likedislike': 'like',
+            //         'content_type': '{{model_type}}',
+            //         'object_id': "{{ post.id }}",
+            //         'csrfmiddlewaretoken': '{{csrf_token}}',
+            //     },
+            //     function (data, status) {
+            //         console.log(data, status)
+            //     }
+            // )
 
-    //                 console.log("SUCCESS")
+            // var counter = ("{{ post.post_like.count }}")
+            // var addCounter = counter + 1
+            // var minCounter = counter - 1
+            $.ajax({
+                type: "POST",
+                url: "{% url 'likes:add-to-like' id=post.id model_type='post' %}",
+                // url: "http://127.0.0.1:8000/api/likes/like/add/?content_type=post&object_id={{post.id}}",
+                // url: "{% url 'likes:add-to-like' id=post.id model_type='post' %}",
+                // dataType: "json",
+                data: {
+                    'likedislike': 'like',
+                    'csrfmiddlewaretoken': '{{csrf_token}}',
+                },
+                success: function (data) {
+                    var newLike;
+                    {% if likecolor %}
+                    newLike = likeColor.innerText + 1
+                    likeColor.classList.toggle('fas')
+                    likeColor.classList.toggle('far')
+                    {% else %}
+                    newLike = likeColor.innerText - 1
+                    likeColor.classList.toggle('far')
+                    likeColor.classList.toggle('fas')
+                    {% endif %}
+                    console.log("SUCCESS")
 
-    //             },
-    //             error: function (error) {
-    //                 alert(data.type)
-    //                 console.log(error)
-    //                 console.log("error")
-    //             }
-    //         });
-    //     });
-    // });
+                },
+                //error: function (error) {
+                    //alert(data.type)
+                    //console.log(error)
+                    //console.log("error")
+                //}
+            });
+        });
+    });
 
 </script>
 {% endblock %}
