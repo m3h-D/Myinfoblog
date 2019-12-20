@@ -17,9 +17,13 @@
     {{ update_form.media}}
     <form action="." method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        {{ update_form.author }}
         <p><label for="id_title">عنوان:</label> <input class="form-control" type="text" name="title"
                 value="{{update_form.instance.title}}" maxlength="120" required="" id="id_title"></p>
-        <p><label for="id_image">تصویر عنوان:</label> کنونی: <a href="{{update_form.instance.image.url}}">ff.jpg</a><br>
+        <p><label for="id_image" style="float: right">تصویر عنوان: </label> کنونی:
+
+            <a href="{{update_form.instance.image.url}}"><img src="{{ update_form.instance.image.url }}"
+                    style="height: 50px; width: 50px"></a><br>
 
 
             <div class="custom-file">
@@ -47,7 +51,8 @@
         {{update_form.content}}
 
         <p><label for="id_tags">تگ ها:</label> <input class="form-control" type="text" name="tags"
-                value="{% for tag in update_form.instance.tags %}{{tag}} , {%empty%}{% endfor %}" id="id_tags"></p>
+                value="{% for tag in update_form.instance.tags %}{{tag}}{% if not forloop.last %}, {% else %}{% endif %}{%empty%}{% endfor %}"
+                id="id_tags"></p>
         <p><label for="id_published">منتشر شده</label>
             {{update_form.published}}</p>
         <p><label for="id_special">ویژه</label>

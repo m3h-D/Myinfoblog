@@ -2,6 +2,7 @@
 <html lang="en">
 {% load static %}
 {% load like_tags %}
+{% load class_model %}
 
 <head>
     <meta charset="utf-8">
@@ -11,31 +12,19 @@
     <meta content="" name="description">
 
     <!-- Favicons -->
-    <link href="{% static 'img/favicon.png' %}" rel="icon">
-    <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link
         href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Raleway:300,400,500,700,800"
         rel="stylesheet">
 
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <!-- Bootstrap CSS File -->
-    <!-- <link href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"> -->
 
     <!-- Libraries CSS Files -->
-    <link href="{% static 'lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-  <link href="{% static 'lib/animate/animate.min.css" rel="stylesheet">
-  <link href="{% static 'lib/venobox/venobox.css" rel="stylesheet">
-  <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
 
-    <!-- Main Stylesheet File -->
-    <!-- <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" media="screen"> -->
-    <link href="{% static 'css/style.css' %}" rel="stylesheet" media="screen">
-    <link href="{% static 'color/default.css' %}" rel="stylesheet" media="screen">
     <!-- <link href="https://bootswatch.com/4/litera/bootstrap.min.css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <!-- =======================================================
     Theme Name: TheEvent
@@ -49,14 +38,9 @@
     <br>
     <div class="page-head-blog pr-3 pl-0">
         <div class="single-blog-page">
-            <!-- search option start -->
-            <!-- <form action="." method="get">
-                {{	form.as_p	}}
-                <input type="submit" value="Search">
-            </form> -->
             <form action="{% url 'posts:post-search' %}" method="GET">
-                <div class="search-option">
-                    <input type="search" name="results" value="{{ request.GET.results }}" id="" placeholder="جستجو">
+                <div class="search-option row">
+                    <input type="search" name="results" value="{{ request.GET.results }}" placeholder="جستجو">
                     <button class="button" type="submit">
                         <i class="fa fa-search"></i>
                     </button>
@@ -142,16 +126,28 @@
                     </li>
                 </ul>
             </div>
-        </div>
-        <div class="single-blog-page">
+        </div> -->
+        <div class="single-blog-page text-right">
             <div class="left-tags blog-tags">
                 <div class="popular-tag left-side-tags left-blog">
-                    <h4>popular tags</h4>
+                    <h4>تگ ها محبوب</h4>
                     <ul>
+                        {% tags_side as the_tags %}
+                        {% for tag in the_tags %}
                         <li>
-                            <a href="#">Portfolio</a>
+                            <a href="#">{{ tag }} #</a>
                         </li>
+                        {% empty %}
+                        {% endfor %}
+                        <!-- {% for tags in all_posts_sidebar %}
+
                         <li>
+                            <a href="#">{% for tag in tags %}{{ tag }} # {% endfor %}</a>
+                        </li>
+
+                        {% empty %}
+                        {% endfor %} -->
+                        <!-- <li>
                             <a href="#">Project</a>
                         </li>
                         <li>
@@ -171,29 +167,23 @@
                         </li>
                         <li>
                             <a href="#">Masonry</a>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
     <!-- JavaScript Libraries -->
-    <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'lib/jquery/jquery-migrate.min.js' %}"></script>
-    <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-    <script src="{% static 'lib/superfish/hoverIntent.js' %}"></script>
-    <script src="{% static 'lib/superfish/superfish.min.js' %}"></script>
-    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
-    <script src="{% static 'lib/venobox/venobox.min.js' %}"></script>
-    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-    <!-- js -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
 
-    <!-- Contact Form JavaScript File -->
-    <script src="{% static 'contactform/contactform.js' %}"></script>
-
-    <!-- Template Main Javascript File -->
-    <script src="{% static 'js/main.js' %}"></script>
 </body>
 
 </html>
