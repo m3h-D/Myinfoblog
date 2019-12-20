@@ -5,7 +5,8 @@ from django.contrib.auth import get_user_model
 from django.template.defaultfilters import truncatewords_html, truncatewords, truncatechars_html
 from django.utils.html import strip_tags
 
-from .utils import get_client_ip, likedislike_manager, get_or_create_auth_anon
+# get_or_create_auth_anon
+from .utils import get_client_ip, likedislike_manager, is_auth_or_not
 # Create your models here.
 
 
@@ -23,14 +24,53 @@ class LikeDislikeManager(models.Manager):
             content_type=content_type, object_id=obj_id)
         return queryset
 
-    # @get_or_create_auth_anon('LikeDislike')
-    def create_for_instance_model(self, instance, request, likedislike):
+    @is_auth_or_not
+    def create_for_instance_model(self, instance, request, likedislike, user=None):
+        """
+        bar assasse model create mkonim
+        age user anonymous bud bar assasse IP_address taghirat emal mishe
+        age authenticate bud ke nega mikone bebine ip sh hast ya na age bud
+        faqat user behesh mide...
+        """
+        ip_address = get_client_ip(request)
+        content_type = ContentType.objects.get_for_model(instance.__class__)
+        try:
+            queryset = self.get(
+                models.Q(
+                    user=user,
+                    content_type=content_type,
+                    object_id=instance.id,
+                ) |
+                models.Q(
+                    ip_address=ip_address,
+                    content_type=content_type,
+                    object_id=instance.id,
+                )
 
-        queryset = get_or_create_auth_anon(
-            self, instance, request, likedislike=likedislike)
-        if type(queryset) is not tuple:
-            likedislike_manager(queryset, likedislike, request)
+            )
+
+        except:
+            queryset = self.create(
+                user=user,
+                ip_address=ip_address,
+                content_type=content_type,
+                object_id=instance.id,
+                content=instance.content,
+                likedislike=likedislike,
+            )
+        else:
+            likedislike_manager(queryset, ip_address, likedislike, request)
+
         return queryset
+
+    # @get_or_create_auth_anon('LikeDislike')
+    # def create_for_instance_model(self, instance, request, likedislike):
+
+    #     queryset = get_or_create_auth_anon(
+    #         self, instance, request, likedislike=likedislike)
+    #     if type(queryset) is not tuple:
+    #         likedislike_manager(queryset, likedislike, request)
+    #     return queryset
 
     # def create_for_instance_model(self, instance, request, likedislike):
     #     """
@@ -50,13 +90,21 @@ class LikeDislikeManager(models.Manager):
     #         # queryset = super(LikeDislikeManager, self).get_or_create()
     #         try:
     #             queryset = self.get(
-    #                 # user=user,
-    #                 ip_address=ip_address,
-    #                 content_type=content_type,
-    #                 object_id=instance.id,
-    #                 # likedislike=likedislike
+    #                 models.Q(
+    #                     user=request.user,
+    #                     content_type=content_type,
+    #                     object_id=instance.id,
+    #                     # likedislike=likedislike
+    #                 ) |
+    #                 models.Q(
+    #                     ip_address=ip_address,
+    #                     content_type=content_type,
+    #                     object_id=instance.id,
+    #                     # likedislike=likedislike
+    #                 )
+
     #             )
-    #             likedislike_manager(queryset, likedislike, request)
+    #             likedislike_manager(queryset, ip_address, likedislike, request)
 
     #         except:
     #             queryset = self.create(
@@ -76,7 +124,7 @@ class LikeDislikeManager(models.Manager):
     #                 object_id=instance.id,
     #                 # likedislike=likedislike
     #             )
-    #             likedislike_manager(queryset, likedislike, request)
+    #             likedislike_manager(queryset, ip_address, likedislike, request)
 
     #         except:
     #             queryset = self.create(

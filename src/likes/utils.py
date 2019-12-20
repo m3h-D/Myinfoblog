@@ -20,7 +20,7 @@ def get_client_ip(request):
     return ip
 
 
-def likedislike_manager(queryset, likedislike, request):
+def likedislike_manager(queryset, ip_address, likedislike, request):
     """
     baraye behine kardane code(dry)
     """
@@ -31,57 +31,25 @@ def likedislike_manager(queryset, likedislike, request):
     elif queryset.likedislike == 'like' and likedislike == 'dislike':
         queryset.likedislike = 'dislike'
         if request.user.is_authenticated:
+            queryset.ip_address = ip_address
             queryset.user = request.user
         queryset.save()
     elif queryset.likedislike == 'dislike' and likedislike == 'like':
         queryset.likedislike = 'like'
         if request.user.is_authenticated:
+            queryset.ip_address = ip_address
             queryset.user = request.user
         queryset.save()
     return queryset
 
 
-def get_or_create_auth_anon(ClassManager, instance, request, *args, **kwargs):
-    ip_address = get_client_ip(request)
-    # print('arge maaaaaaaaaaaan', kwargs, args)
-    # my_filter = {
-    #     kwargs.keys()[0]: kwargs.values()[0]
-    # }
-    content_type = ContentType.objects.get_for_model(
-        instance.__class__)
-    if request.user.is_authenticated:
-        try:
-            queryset = ClassManager.get(
-                ip_address=ip_address,
-                content_type=content_type,
-                object_id=instance.id,
-            )
-
-        except:
-            queryset = ClassManager.update_or_create(
-                user=request.user,
-                ip_address=ip_address,
-                content_type=content_type,
-                object_id=instance.id,
-                content=instance.content,
-                **kwargs
-                # 'base'=kwargs.values()
-            )
-    elif request.user.is_anonymous:
-
-        try:
-            queryset = ClassManager.get(
-                ip_address=ip_address,
-                content_type=content_type,
-                object_id=instance.id,
-            )
-
-        except:
-            queryset = ClassManager.update_or_create(
-                ip_address=ip_address,
-                content_type=content_type,
-                object_id=instance.id,
-                content=instance.content,
-                **kwargs
-            )
-    return queryset
+def is_auth_or_not(function):
+    @wraps(function)
+    def wrapper(*args, user=None, **kwargs):
+        request = kwargs['request']
+        if request.user.is_authenticated:
+            q = function(*args, user=request.user, **kwargs)
+        elif request.user.is_anonymous:
+            q = function(*args, user=user, **kwargs)
+        return q
+    return wrapper
