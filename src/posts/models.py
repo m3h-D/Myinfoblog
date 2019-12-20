@@ -44,7 +44,8 @@ class Post(models.Model):
     title = models.CharField(max_length=120, verbose_name='عنوان')
     slug = models.SlugField(blank=True, max_length=100,
                             unique=True, verbose_name='اسلاگ')
-    image = models.ImageField(verbose_name='تصویر عنوان')
+    image = models.ImageField(
+        verbose_name='تصویر عنوان', upload_to='posts/img/%Y-%m-%d')
     category = models.ManyToManyField(
         Category, related_name='post', verbose_name='دسته')
     content = HTMLField()
@@ -57,6 +58,7 @@ class Post(models.Model):
     commetns = GenericRelation(Comments, related_name='post')
     rating = GenericRelation(Rate)
     likes = GenericRelation(LikeDislike, related_name='postlikes')
+    usertracker = GenericRelation(UserTracker, related_name='postusertrakcer')
     published = models.BooleanField(default=True, verbose_name='پست شده')
     special = models.BooleanField(default=False, verbose_name='ویژه')
     created = models.DateTimeField(auto_now_add=True)
