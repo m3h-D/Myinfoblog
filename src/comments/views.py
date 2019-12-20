@@ -9,7 +9,7 @@ from .models import Comments
 def delete_comment(request, id):
     """function baraye pak kardane comment"""
     comment = get_object_or_404(Comments, id=id)
-    if request.user == comment.user:
+    if request.user == comment.user or request.user.is_admin or request.user.is_staff:
         comment.delete()
         messages.success(request, "کامنت شما با موفقیت حذف شد")
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
