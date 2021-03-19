@@ -33,7 +33,7 @@ django-filebrowser-no-grappelli==3.7.8
 django-filter==2.2.0
 django-tinymce4==3.0.2
 django-tinymce4-lite==1.7.5
-djangorestframework==3.10.3
+djangorestframework==3.11.2
 gunicorn==19.9.0
 redis==3.3.8
 django-heroku==0.3.1
